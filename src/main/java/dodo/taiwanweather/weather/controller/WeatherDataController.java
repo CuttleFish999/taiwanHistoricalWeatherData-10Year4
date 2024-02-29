@@ -61,7 +61,7 @@ public class WeatherDataController {
                 JSONObject firstMonth = monthly.getJSONObject(0); // 月
 
 
-                double month = firstMonth.has("Month") ? firstMonth.getDouble("Month") : Double.NaN;
+                Integer month = firstMonth.has("Month") ? Integer.valueOf(firstMonth.getInt("Month")) : null;
 //                double tempMin = firstMonth.has("Minimum") ? firstMonth.getDouble("Minimum") : Double.NaN;
                 double tempMean = firstMonth.has("Mean") ? firstMonth.getDouble("Mean") : Double.NaN; //平均溫度
 //                double maxGE30Days = firstMonth.has("maxGE30Days") ? firstMonth.getDouble("maxGE30Days") : Double.NaN; //一個月內最高

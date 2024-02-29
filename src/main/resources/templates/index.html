@@ -107,8 +107,8 @@
                 </thead>
                 <tbody>
                 <tr th:each="data : ${weatherData}">
-                    <td th:text="${data.monthly}">日期</td>
-<!--                    <td th:text="${data.TemperatureMax}">最高氣溫</td>-->
+                    <td th:text="${data.monthly + '月'}">日期</td>
+                    <!--                    <td th:text="${data.TemperatureMax}">最高氣溫</td>-->
 <!--                    <td th:text="${data.TemperatureMin}">最低氣溫</td>-->
                     <td th:text="${data.TemperatureMean}">平均氣溫</td>
 <!--                    <td th:text="${data.rainfall}">雨量</td>-->
