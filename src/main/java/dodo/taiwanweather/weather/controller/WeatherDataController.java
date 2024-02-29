@@ -32,7 +32,7 @@ public class WeatherDataController {
 
 
     @GetMapping("/home")
-    public String home(Model model){
+    public String home(Model model) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://opendata.cwa.gov.tw/api/v1/rest/datastore/C-B0027-001?Authorization=CWA-2FD4BAFB-A6F7-4127-9D46-F2A699F51C10&limit=1&weatherElement=&Month=1,2,3,4,5,6,7,8,9,10,11,12"))
@@ -70,7 +70,7 @@ public class WeatherDataController {
                 JSONArray monthlyAirPressure = airPressure.getJSONArray("monthly");
                 JSONArray monthlyAirSunshineDuration = sunshineDuration.getJSONArray("monthly");
 
-                for(int monthCount = 0 ; monthCount < 12 ; monthCount++){
+                for (int monthCount = 0; monthCount < 12; monthCount++) {
                     JSONObject firstMonthTemp = monthlyTemp.getJSONObject(monthCount);
                     JSONObject firstMonthHumidity = monthlyHumidity.getJSONObject(monthCount);
                     JSONObject firstMonthPrecipitation = monthlyPrecipitation.getJSONObject(monthCount);
@@ -79,38 +79,41 @@ public class WeatherDataController {
                     JSONObject firstMonthlyAirSunshineDuration = monthlyAirSunshineDuration.getJSONObject(monthCount);
 
 
-
-                int stationStartYear = airTemperature.getInt("StationStartYear"); //開始年
-                int stationEndYear = airTemperature.getInt("StationEndYear"); //結束年
-                Integer month = firstMonthTemp.has("Month") ? Integer.valueOf(firstMonthTemp.getInt("Month")) : null; // 月份
-                double tempMean = firstMonthTemp.has("Mean") ? firstMonthTemp.getDouble("Mean") : Double.NaN; // 平均温度
-                double humidityMean = firstMonthHumidity.has("Mean") ? firstMonthHumidity.getDouble("Mean") : Double.NaN; // 平均湿度
-                double Precipitation = firstMonthPrecipitation.has("Accumulation") ? firstMonthPrecipitation.getDouble("Accumulation") : Double.NaN; // 累積雨量
-                double WindSpeed = firstMonthWindSpeed.has("Mean") ? firstMonthWindSpeed.getDouble("Mean") : Double.NaN; // 平均風速
-                double AirPressure = firstMonthlyAirPressure.has("Mean") ? firstMonthlyAirPressure.getDouble("Mean") : Double.NaN; // 平均氣壓
-                double SunshineDuration = firstMonthlyAirSunshineDuration.has("Total") ? firstMonthlyAirSunshineDuration.getDouble("Total") : Double.NaN; // 平均氣壓
-
+                    int stationStartYear = airTemperature.getInt("StationStartYear"); //開始年
+                    int stationEndYear = airTemperature.getInt("StationEndYear"); //結束年
+                    Integer month = firstMonthTemp.has("Month") ? Integer.valueOf(firstMonthTemp.getInt("Month")) : null; // 月份
+                    double tempMean = firstMonthTemp.has("Mean") ? firstMonthTemp.getDouble("Mean") : Double.NaN; // 平均温度
+                    double humidityMean = firstMonthHumidity.has("Mean") ? firstMonthHumidity.getDouble("Mean") : Double.NaN; // 平均湿度
+                    double Precipitation = firstMonthPrecipitation.has("Accumulation") ? firstMonthPrecipitation.getDouble("Accumulation") : Double.NaN; // 累積雨量
+                    double WindSpeed = firstMonthWindSpeed.has("Mean") ? firstMonthWindSpeed.getDouble("Mean") : Double.NaN; // 平均風速
+                    double AirPressure = firstMonthlyAirPressure.has("Mean") ? firstMonthlyAirPressure.getDouble("Mean") : Double.NaN; // 平均氣壓
+                    double SunshineDuration = firstMonthlyAirSunshineDuration.has("Total") ? firstMonthlyAirSunshineDuration.getDouble("Total") : Double.NaN; // 平均氣壓
 
 
-                Map<String, Object> weatherMap = new HashMap<>();
-                weatherMap.put("StationName", stationName);
-                weatherMap.put("StationStartYear", stationStartYear);
-                weatherMap.put("StationEndYear", stationEndYear);
-                weatherMap.put("Month", month);
-                weatherMap.put("TemperatureMean", tempMean);
-                weatherMap.put("HumidityMean", humidityMean);
-                weatherMap.put("Precipitation", Precipitation);
-                weatherMap.put("WindSpeed", WindSpeed);
-                weatherMap.put("AirPressure", AirPressure);
-                weatherMap.put("SunshineDuration", SunshineDuration);
+                    Map<String, Object> weatherMap = new HashMap<>();
+                    System.out.println( (monthCount == 0));
+                    if (monthCount == 0) {
+                        weatherMap.put("StationName", stationName);
+                    }else{
+                        weatherMap.put("StationName", "");
+                    }
+                    weatherMap.put("StationStartYear", stationStartYear);
+                    weatherMap.put("StationEndYear", stationEndYear);
+                    weatherMap.put("Month", month);
+                    weatherMap.put("TemperatureMean", tempMean);
+                    weatherMap.put("HumidityMean", humidityMean);
+                    weatherMap.put("Precipitation", Precipitation);
+                    weatherMap.put("WindSpeed", WindSpeed);
+                    weatherMap.put("AirPressure", AirPressure);
+                    weatherMap.put("SunshineDuration", SunshineDuration);
 
 
-                weatherData.add(weatherMap);
+                    weatherData.add(weatherMap);
                 }
             }
 
             if (!weatherData.isEmpty()) {
-                System.out.println(weatherData.get(0).get("SunshineDuration"));
+                System.out.println(weatherData.get(0).get("StationName"));
             }
 
             model.addAttribute("weatherData", weatherData);

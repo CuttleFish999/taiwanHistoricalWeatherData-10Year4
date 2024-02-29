@@ -36,9 +36,14 @@
                 <label for="city" class="form-label">縣市</label>
                 <select id="city" class="form-select">
                     <option selected>選擇縣市</option>
+
                     <th:block th:each="station : ${weatherData}">
-                        <option th:value="${station.StationName}" th:text="${station.StationName}"></option>
+                        <th:block th:if="${station.StationName != null && station.StationName != ''}">
+                            <option th:value="${station.StationName}" th:text="${station.StationName}"></option>
+                        </th:block>
                     </th:block>
+
+
                 </select>
             </div>
 
