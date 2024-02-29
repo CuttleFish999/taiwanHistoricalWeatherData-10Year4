@@ -55,16 +55,17 @@ public class WeatherDataController {
 
                 JSONObject stats = location.getJSONObject("stationObsStatistics");
                 JSONObject airTemperature = stats.getJSONObject("AirTemperature");
-                JSONArray monthly = airTemperature.getJSONArray("monthly");
+//
+                JSONArray monthly = airTemperature.getJSONArray("monthly"); // 月
+                JSONArray airTemperatureMean = airTemperature.getJSONArray("monthly"); // 平均溫度
 
 
-                JSONObject firstMonth = monthly.getJSONObject(0); // 月
+                JSONObject firstMonth = monthly.getJSONObject(0); // 1月
 
+                Integer month = firstMonth.has("Month") ? Integer.valueOf(firstMonth.getInt("Month")) : null; //月份
+                double tempMean = firstMonth.has("Mean") ? firstMonth.getDouble("Mean") : Double.NaN;  //平均溫度
 
-                Integer month = firstMonth.has("Month") ? Integer.valueOf(firstMonth.getInt("Month")) : null;
-//                double tempMin = firstMonth.has("Minimum") ? firstMonth.getDouble("Minimum") : Double.NaN;
-                double tempMean = firstMonth.has("Mean") ? firstMonth.getDouble("Mean") : Double.NaN; //平均溫度
-//                double maxGE30Days = firstMonth.has("maxGE30Days") ? firstMonth.getDouble("maxGE30Days") : Double.NaN; //一個月內最高
+                double RelativeHumidity = firstMonth.has("RelativeHumidity") ? firstMonth.getDouble("Mean") : Double.NaN; //一個月內最高
 //                double meanGE25Days = firstMonth.has("meanGE25Days") ? firstMonth.getDouble("meanGE25Days") : Double.NaN; //一個月內最低
 //                double minLE10Days = firstMonth.has("minLE10Days") ? firstMonth.getDouble("minLE10Days") : Double.NaN;  //一個月內平均
 
@@ -73,12 +74,13 @@ public class WeatherDataController {
                 stationData.put("StationName", stationName);
                 stationData.put("monthly", month);
                 stationData.put("TemperatureMean", tempMean); //平均溫度
+                stationData.put("RelativeHumidity", RelativeHumidity); //相對溼度
 
                 weatherData.add(stationData);
             }
 
             if (!weatherData.isEmpty()) {
-                System.out.println(weatherData.get(0).get("Month"));
+                System.out.println(weatherData.get(0).get("TemperatureMean"));
             }
 
             model.addAttribute("weatherData", weatherData);
