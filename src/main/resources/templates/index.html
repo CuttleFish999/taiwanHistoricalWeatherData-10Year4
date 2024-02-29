@@ -108,9 +108,8 @@
                 <tbody>
                 <tr th:each="data : ${weatherData}">
                     <td th:text="${data.monthly + '月'}">日期</td>
-                    <!--                    <td th:text="${data.TemperatureMax}">最高氣溫</td>-->
-<!--                    <td th:text="${data.TemperatureMin}">最低氣溫</td>-->
                     <td th:text="${data.TemperatureMean + '度'}">平均氣溫</td>
+                    <td th:text="${data.RelativeHumidity_A + '%'}">相對濕度</td>
 <!--                    <td th:text="${data.rainfall}">雨量</td>-->
 
                 </tr>
