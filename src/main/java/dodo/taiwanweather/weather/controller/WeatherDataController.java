@@ -35,7 +35,7 @@ public class WeatherDataController {
     public String home(Model model){
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://opendata.cwa.gov.tw/api/v1/rest/datastore/C-B0027-001?Authorization=CWA-2FD4BAFB-A6F7-4127-9D46-F2A699F51C10&limit=1&weatherElement=&Month=1"))
+                .uri(URI.create("https://opendata.cwa.gov.tw/api/v1/rest/datastore/C-B0027-001?Authorization=CWA-2FD4BAFB-A6F7-4127-9D46-F2A699F51C10&limit=1&weatherElement=&Month=1,2,3,4,5,6,7,8,9,10,11,12"))
                 .header("accept", "application/json")
                 .build();
 
@@ -70,12 +70,15 @@ public class WeatherDataController {
                 JSONArray monthlyAirPressure = airPressure.getJSONArray("monthly");
                 JSONArray monthlyAirSunshineDuration = sunshineDuration.getJSONArray("monthly");
 
-                JSONObject firstMonthTemp = monthlyTemp.getJSONObject(0);
-                JSONObject firstMonthHumidity = monthlyHumidity.getJSONObject(0);
-                JSONObject firstMonthPrecipitation = monthlyPrecipitation.getJSONObject(0);
-                JSONObject firstMonthWindSpeed = monthlywindSpeed.getJSONObject(0);
-                JSONObject firstMonthlyAirPressure = monthlyAirPressure.getJSONObject(0);
-                JSONObject firstMonthlyAirSunshineDuration = monthlyAirSunshineDuration.getJSONObject(0);
+                for(int monthCount = 0 ; monthCount < 12 ; monthCount++){
+                    JSONObject firstMonthTemp = monthlyTemp.getJSONObject(monthCount);
+                    JSONObject firstMonthHumidity = monthlyHumidity.getJSONObject(monthCount);
+                    JSONObject firstMonthPrecipitation = monthlyPrecipitation.getJSONObject(monthCount);
+                    JSONObject firstMonthWindSpeed = monthlywindSpeed.getJSONObject(monthCount);
+                    JSONObject firstMonthlyAirPressure = monthlyAirPressure.getJSONObject(monthCount);
+                    JSONObject firstMonthlyAirSunshineDuration = monthlyAirSunshineDuration.getJSONObject(monthCount);
+
+
 
                 int stationStartYear = airTemperature.getInt("StationStartYear"); //開始年
                 int stationEndYear = airTemperature.getInt("StationEndYear"); //結束年
@@ -103,6 +106,7 @@ public class WeatherDataController {
 
 
                 weatherData.add(weatherMap);
+                }
             }
 
             if (!weatherData.isEmpty()) {
