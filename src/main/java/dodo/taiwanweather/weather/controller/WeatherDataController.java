@@ -58,9 +58,7 @@ public class WeatherDataController {
                 JSONObject airTemperature = stats.getJSONObject("AirTemperature");
                 JSONObject relativeHumidity = stats.getJSONObject("RelativeHumidity");
 
-                // 直接从 AirTemperature 对象获取 StationStartYear 和 StationEndYear
-                int stationStartYear = airTemperature.getInt("StationStartYear");
-                int stationEndYear = airTemperature.getInt("StationEndYear");
+
 
                 JSONArray monthlyTemp = airTemperature.getJSONArray("monthly");
                 JSONArray monthlyHumidity = relativeHumidity.getJSONArray("monthly");
@@ -68,6 +66,8 @@ public class WeatherDataController {
                 JSONObject firstMonthTemp = monthlyTemp.getJSONObject(0);
                 JSONObject firstMonthHumidity = monthlyHumidity.getJSONObject(0);
 
+                int stationStartYear = airTemperature.getInt("StationStartYear"); //開始年
+                int stationEndYear = airTemperature.getInt("StationEndYear"); //結束年
                 Integer month = firstMonthTemp.has("Month") ? Integer.valueOf(firstMonthTemp.getInt("Month")) : null; // 月份
                 double tempMean = firstMonthTemp.has("Mean") ? firstMonthTemp.getDouble("Mean") : Double.NaN; // 平均温度
                 double humidityMean = firstMonthHumidity.has("Mean") ? firstMonthHumidity.getDouble("Mean") : Double.NaN; // 平均湿度
