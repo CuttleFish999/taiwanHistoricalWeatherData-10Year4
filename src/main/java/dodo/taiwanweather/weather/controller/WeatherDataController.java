@@ -35,7 +35,7 @@ public class WeatherDataController {
     public String home(Model model){
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://opendata.cwa.gov.tw/api/v1/rest/datastore/C-B0027-001?Authorization=CWA-2FD4BAFB-A6F7-4127-9D46-F2A699F51C10&limit=1&format=JSON"))
+                .uri(URI.create("https://opendata.cwa.gov.tw/api/v1/rest/datastore/C-B0027-001?Authorization=CWA-2FD4BAFB-A6F7-4127-9D46-F2A699F51C10&limit=1&weatherElement=&Month=1"))
                 .header("accept", "application/json")
                 .build();
 
@@ -61,16 +61,19 @@ public class WeatherDataController {
                 JSONObject firstMonth = monthly.getJSONObject(0); // 月
 
 
-                double tempMax = firstMonth.has("Maximum") ? firstMonth.getDouble("Maximum") : Double.NaN;
-                double tempMin = firstMonth.has("Minimum") ? firstMonth.getDouble("Minimum") : Double.NaN;
-                double tempMean = firstMonth.has("Mean") ? firstMonth.getDouble("Mean") : Double.NaN;
+//                double tempMax = firstMonth.has("Maximum") ? firstMonth.getDouble("Maximum") : Double.NaN;
+//                double tempMin = firstMonth.has("Minimum") ? firstMonth.getDouble("Minimum") : Double.NaN;
+                double tempMean = firstMonth.has("Mean") ? firstMonth.getDouble("Mean") : Double.NaN; //平均溫度
+//                double maxGE30Days = firstMonth.has("maxGE30Days") ? firstMonth.getDouble("maxGE30Days") : Double.NaN; //一個月內最高
+//                double meanGE25Days = firstMonth.has("meanGE25Days") ? firstMonth.getDouble("meanGE25Days") : Double.NaN; //一個月內最低
+//                double minLE10Days = firstMonth.has("minLE10Days") ? firstMonth.getDouble("minLE10Days") : Double.NaN;  //一個月內平均
 
                 // 封装
                 Map<String, Object> stationData = new HashMap<>();
                 stationData.put("StationName", stationName);
-                stationData.put("TemperatureMax", tempMax);
-                stationData.put("TemperatureMin", tempMin);
-                stationData.put("TemperatureMean", tempMean);
+//                stationData.put("TemperatureMax", tempMax);
+//                stationData.put("TemperatureMin", tempMin);
+                stationData.put("TemperatureMean", tempMean); //平均溫度
 
                 weatherData.add(stationData);
             }
