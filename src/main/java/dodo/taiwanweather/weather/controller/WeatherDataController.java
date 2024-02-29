@@ -60,6 +60,7 @@ public class WeatherDataController {
                 JSONObject precipitation = stats.getJSONObject("Precipitation");
                 JSONObject windSpeed = stats.getJSONObject("WindSpeed");
                 JSONObject airPressure = stats.getJSONObject("AirPressure");
+                JSONObject sunshineDuration = stats.getJSONObject("SunshineDuration");
 
 
                 JSONArray monthlyTemp = airTemperature.getJSONArray("monthly");
@@ -67,12 +68,14 @@ public class WeatherDataController {
                 JSONArray monthlyPrecipitation = precipitation.getJSONArray("monthly");
                 JSONArray monthlywindSpeed = windSpeed.getJSONArray("monthly");
                 JSONArray monthlyAirPressure = airPressure.getJSONArray("monthly");
+                JSONArray monthlyAirSunshineDuration = sunshineDuration.getJSONArray("monthly");
 
                 JSONObject firstMonthTemp = monthlyTemp.getJSONObject(0);
                 JSONObject firstMonthHumidity = monthlyHumidity.getJSONObject(0);
                 JSONObject firstMonthPrecipitation = monthlyPrecipitation.getJSONObject(0);
                 JSONObject firstMonthWindSpeed = monthlywindSpeed.getJSONObject(0);
                 JSONObject firstMonthlyAirPressure = monthlyAirPressure.getJSONObject(0);
+                JSONObject firstMonthlyAirSunshineDuration = monthlyAirSunshineDuration.getJSONObject(0);
 
                 int stationStartYear = airTemperature.getInt("StationStartYear"); //開始年
                 int stationEndYear = airTemperature.getInt("StationEndYear"); //結束年
@@ -82,6 +85,7 @@ public class WeatherDataController {
                 double Precipitation = firstMonthPrecipitation.has("Accumulation") ? firstMonthPrecipitation.getDouble("Accumulation") : Double.NaN; // 累積雨量
                 double WindSpeed = firstMonthWindSpeed.has("Mean") ? firstMonthWindSpeed.getDouble("Mean") : Double.NaN; // 平均風速
                 double AirPressure = firstMonthlyAirPressure.has("Mean") ? firstMonthlyAirPressure.getDouble("Mean") : Double.NaN; // 平均氣壓
+                double SunshineDuration = firstMonthlyAirSunshineDuration.has("Total") ? firstMonthlyAirSunshineDuration.getDouble("Total") : Double.NaN; // 平均氣壓
 
 
 
@@ -95,13 +99,14 @@ public class WeatherDataController {
                 weatherMap.put("Precipitation", Precipitation);
                 weatherMap.put("WindSpeed", WindSpeed);
                 weatherMap.put("AirPressure", AirPressure);
+                weatherMap.put("SunshineDuration", SunshineDuration);
 
 
                 weatherData.add(weatherMap);
             }
 
             if (!weatherData.isEmpty()) {
-                System.out.println(weatherData.get(0).get("AirPressure"));
+                System.out.println(weatherData.get(0).get("SunshineDuration"));
             }
 
             model.addAttribute("weatherData", weatherData);

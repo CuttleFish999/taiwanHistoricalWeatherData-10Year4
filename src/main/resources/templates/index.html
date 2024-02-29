@@ -106,6 +106,7 @@
                     <th>累積雨量</th>
                     <th>平均風速</th>
                     <th>平均氣壓</th>
+                    <th>日照指數</th>
 
                 </tr>
                 </thead>
@@ -119,6 +120,7 @@
                     <td th:text="${data.Precipitation + ' mm'}">累積雨量</td>
                     <td th:text="${data.WindSpeed + ' km/h'}">平均風速</td>
                     <td th:text="${data.AirPressure + ' Pa'}">平均氣壓</td>
+                    <td th:text="${data.SunshineDuration + ' hr'}">日照指數</td>
 
                 </tr>
                 </tbody>
