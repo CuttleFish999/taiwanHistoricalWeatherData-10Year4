@@ -105,6 +105,7 @@
                     <th>濕度</th>
                     <th>累積雨量</th>
                     <th>平均風速</th>
+                    <th>平均氣壓</th>
 
                 </tr>
                 </thead>
@@ -117,6 +118,7 @@
                     <td th:text="${data.HumidityMean + ' %'}">相對濕度</td>
                     <td th:text="${data.Precipitation + ' mm'}">累積雨量</td>
                     <td th:text="${data.WindSpeed + ' km/h'}">平均風速</td>
+                    <td th:text="${data.AirPressure + ' Pa'}">平均氣壓</td>
 
                 </tr>
                 </tbody>

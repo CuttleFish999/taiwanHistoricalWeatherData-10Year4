@@ -59,17 +59,20 @@ public class WeatherDataController {
                 JSONObject relativeHumidity = stats.getJSONObject("RelativeHumidity");
                 JSONObject precipitation = stats.getJSONObject("Precipitation");
                 JSONObject windSpeed = stats.getJSONObject("WindSpeed");
+                JSONObject airPressure = stats.getJSONObject("AirPressure");
 
 
                 JSONArray monthlyTemp = airTemperature.getJSONArray("monthly");
                 JSONArray monthlyHumidity = relativeHumidity.getJSONArray("monthly");
                 JSONArray monthlyPrecipitation = precipitation.getJSONArray("monthly");
                 JSONArray monthlywindSpeed = windSpeed.getJSONArray("monthly");
+                JSONArray monthlyAirPressure = airPressure.getJSONArray("monthly");
 
                 JSONObject firstMonthTemp = monthlyTemp.getJSONObject(0);
                 JSONObject firstMonthHumidity = monthlyHumidity.getJSONObject(0);
                 JSONObject firstMonthPrecipitation = monthlyPrecipitation.getJSONObject(0);
                 JSONObject firstMonthWindSpeed = monthlywindSpeed.getJSONObject(0);
+                JSONObject firstMonthlyAirPressure = monthlyAirPressure.getJSONObject(0);
 
                 int stationStartYear = airTemperature.getInt("StationStartYear"); //開始年
                 int stationEndYear = airTemperature.getInt("StationEndYear"); //結束年
@@ -78,6 +81,7 @@ public class WeatherDataController {
                 double humidityMean = firstMonthHumidity.has("Mean") ? firstMonthHumidity.getDouble("Mean") : Double.NaN; // 平均湿度
                 double Precipitation = firstMonthPrecipitation.has("Accumulation") ? firstMonthPrecipitation.getDouble("Accumulation") : Double.NaN; // 累積雨量
                 double WindSpeed = firstMonthWindSpeed.has("Mean") ? firstMonthWindSpeed.getDouble("Mean") : Double.NaN; // 平均風速
+                double AirPressure = firstMonthlyAirPressure.has("Mean") ? firstMonthlyAirPressure.getDouble("Mean") : Double.NaN; // 平均氣壓
 
 
 
@@ -90,13 +94,14 @@ public class WeatherDataController {
                 weatherMap.put("HumidityMean", humidityMean);
                 weatherMap.put("Precipitation", Precipitation);
                 weatherMap.put("WindSpeed", WindSpeed);
+                weatherMap.put("AirPressure", AirPressure);
 
 
                 weatherData.add(weatherMap);
             }
 
             if (!weatherData.isEmpty()) {
-                System.out.println(weatherData.get(0).get("WindSpeed"));
+                System.out.println(weatherData.get(0).get("AirPressure"));
             }
 
             model.addAttribute("weatherData", weatherData);
