@@ -1,16 +1,19 @@
-package dodo.taiwanweather.weather.json;
-
+package dodo.taiwanweather.weather.service.Impl;
+import dodo.taiwanweather.weather.service.WeatherDateService;
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.springframework.stereotype.Service;
+
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+@Service
+public class WeatherDateServiceImpl implements WeatherDateService {
 
-public class JsonFileProcessor{
-    public static void main(String[] args) {
-        String filePath = "C:\\Users\\apple\\OneDrive\\桌面\\taiwanHistoricalWeatherData-10Year4\\TaiwanHistoricalWeatherData-10Year\\src\\main\\java\\dodo\\taiwanweather\\weather\\json\\response_1709197604777.json";
-        Integer count = 1;
-
+    public List<String> getStationNames(String filePath) {
+        List<String> stationNames = new ArrayList<>();
 
         StringBuilder jsonData = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -20,7 +23,7 @@ public class JsonFileProcessor{
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return;
+            return stationNames;
         }
 
         JSONObject jsonObject = new JSONObject(jsonData.toString());
@@ -33,7 +36,9 @@ public class JsonFileProcessor{
             JSONObject location = locations.getJSONObject(i);
             JSONObject station = location.getJSONObject("station");
             String stationName = station.getString("StationName");
-            System.out.println(count++ + ": " + stationName);
+            stationNames.add(stationName);
         }
+
+        return stationNames;
     }
 }

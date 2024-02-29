@@ -20,12 +20,22 @@
         </div>
         <form id="searchForm">
             <div class="row g-3">
+<!--                <div class="col-md-4">-->
+<!--                    <label for="city" class="form-label">縣市</label>-->
+<!--                    <select id="city" class="form-select">-->
+<!--                        <option selected>選擇縣市</option>-->
+<!--                    </select>-->
+<!--                </div>-->
                 <div class="col-md-4">
                     <label for="city" class="form-label">縣市</label>
                     <select id="city" class="form-select">
                         <option selected>選擇縣市</option>
+                        <th:block th:each="stationName : ${AllStationNames}">
+                            <option th:value="${stationName}" th:text="${stationName}"></option>
+                        </th:block>
                     </select>
                 </div>
+
                 <div class="col-md-4">
                     <label for="startDate" class="form-label">開始日期</label>
                     <input type="date" class="form-control" id="startDate">
