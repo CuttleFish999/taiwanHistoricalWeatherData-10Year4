@@ -61,7 +61,7 @@ public class WeatherDataController {
                 JSONObject firstMonth = monthly.getJSONObject(0); // 月
 
 
-//                double tempMax = firstMonth.has("Maximum") ? firstMonth.getDouble("Maximum") : Double.NaN;
+                double month = firstMonth.has("Month") ? firstMonth.getDouble("Month") : Double.NaN;
 //                double tempMin = firstMonth.has("Minimum") ? firstMonth.getDouble("Minimum") : Double.NaN;
                 double tempMean = firstMonth.has("Mean") ? firstMonth.getDouble("Mean") : Double.NaN; //平均溫度
 //                double maxGE30Days = firstMonth.has("maxGE30Days") ? firstMonth.getDouble("maxGE30Days") : Double.NaN; //一個月內最高
@@ -71,15 +71,14 @@ public class WeatherDataController {
                 // 封装
                 Map<String, Object> stationData = new HashMap<>();
                 stationData.put("StationName", stationName);
-//                stationData.put("TemperatureMax", tempMax);
-//                stationData.put("TemperatureMin", tempMin);
+                stationData.put("monthly", month);
                 stationData.put("TemperatureMean", tempMean); //平均溫度
 
                 weatherData.add(stationData);
             }
 
             if (!weatherData.isEmpty()) {
-                System.out.println(weatherData.get(0).get("TemperatureMax"));
+                System.out.println(weatherData.get(0).get("Month"));
             }
 
             model.addAttribute("weatherData", weatherData);
