@@ -58,27 +58,31 @@ public class WeatherDataController {
                 JSONObject airTemperature = stats.getJSONObject("AirTemperature");
                 JSONObject relativeHumidity = stats.getJSONObject("RelativeHumidity");
 
+                // 直接从 AirTemperature 对象获取 StationStartYear 和 StationEndYear
+                int stationStartYear = airTemperature.getInt("StationStartYear");
+                int stationEndYear = airTemperature.getInt("StationEndYear");
+
                 JSONArray monthlyTemp = airTemperature.getJSONArray("monthly");
                 JSONArray monthlyHumidity = relativeHumidity.getJSONArray("monthly");
 
                 JSONObject firstMonthTemp = monthlyTemp.getJSONObject(0);
                 JSONObject firstMonthHumidity = monthlyHumidity.getJSONObject(0);
 
-                Integer month = firstMonthTemp.has("Month") ? Integer.valueOf(firstMonthTemp.getInt("Month")) : null; // 月
-                double tempMean = firstMonthTemp.has("Mean") ? firstMonthTemp.getDouble("Mean") : Double.NaN; // 溫度
-                double humidityMean = firstMonthHumidity.has("Mean") ? firstMonthHumidity.getDouble("Mean") : Double.NaN; // 濕度
+                Integer month = firstMonthTemp.has("Month") ? Integer.valueOf(firstMonthTemp.getInt("Month")) : null; // 月份
+                double tempMean = firstMonthTemp.has("Mean") ? firstMonthTemp.getDouble("Mean") : Double.NaN; // 平均温度
+                double humidityMean = firstMonthHumidity.has("Mean") ? firstMonthHumidity.getDouble("Mean") : Double.NaN; // 平均湿度
 
-//                double meanGE25Days = firstMonth.has("meanGE25Days") ? firstMonth.getDouble("meanGE25Days") : Double.NaN; //一個月內最低
-//                double minLE10Days = firstMonth.has("minLE10Days") ? firstMonth.getDouble("minLE10Days") : Double.NaN;  //一個月內平均
+                // 创建一个 Map 来存储这一位置的所有天气数据
+                Map<String, Object> weatherMap = new HashMap<>();
+                weatherMap.put("StationName", stationName);
+                weatherMap.put("StationStartYear", stationStartYear);
+                weatherMap.put("StationEndYear", stationEndYear);
+                weatherMap.put("Month", month);
+                weatherMap.put("TemperatureMean", tempMean);
+                weatherMap.put("HumidityMean", humidityMean);
 
-                // 封装
-                Map<String, Object> stationData = new HashMap<>();
-                stationData.put("StationName", stationName);
-                stationData.put("monthly", month);
-                stationData.put("TemperatureMean", tempMean); //平均溫度
-                stationData.put("RelativeHumidity_A", humidityMean); //相對溼度
-
-                weatherData.add(stationData);
+                // 将 Map 添加到列表中
+                weatherData.add(weatherMap);
             }
 
             if (!weatherData.isEmpty()) {

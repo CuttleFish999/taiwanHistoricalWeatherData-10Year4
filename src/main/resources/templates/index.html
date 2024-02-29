@@ -98,7 +98,9 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>日期</th>
+                    <th>開始年分</th>
+                    <th>結束年分</th>
+                    <th>月份</th>
                     <th>氣溫</th>
                     <th>濕度</th>
                     <th>雨量</th>
@@ -107,9 +109,11 @@
                 </thead>
                 <tbody>
                 <tr th:each="data : ${weatherData}">
-                    <td th:text="${data.monthly + '月'}">日期</td>
+                    <td th:text="${data.StationStartYear + '年'}">開始年分</td>
+                    <td th:text="${data.StationEndYear + '年'}">結束年分</td>
+                    <td th:text="${data.Month + '月'}">月份</td>
                     <td th:text="${data.TemperatureMean + '度'}">平均氣溫</td>
-                    <td th:text="${data.RelativeHumidity_A + '%'}">相對濕度</td>
+                    <td th:text="${data.HumidityMean + '%'}">相對濕度</td>
 <!--                    <td th:text="${data.rainfall}">雨量</td>-->
 
                 </tr>
