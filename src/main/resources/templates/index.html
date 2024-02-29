@@ -20,21 +20,17 @@
         </div>
         <form id="searchForm">
             <div class="row g-3">
-<!--                <div class="col-md-4">-->
-<!--                    <label for="city" class="form-label">縣市</label>-->
-<!--                    <select id="city" class="form-select">-->
-<!--                        <option selected>選擇縣市</option>-->
-<!--                    </select>-->
-<!--                </div>-->
+
                 <div class="col-md-4">
                     <label for="city" class="form-label">縣市</label>
                     <select id="city" class="form-select">
                         <option selected>選擇縣市</option>
-                        <th:block th:each="stationName : ${AllStationNames}">
-                            <option th:value="${stationName}" th:text="${stationName}"></option>
+                        <th:block th:each="station : ${weatherData}">
+                            <option th:value="${station.StationName}" th:text="${station.StationName}"></option>
                         </th:block>
                     </select>
                 </div>
+
 
                 <div class="col-md-4">
                     <label for="startDate" class="form-label">開始日期</label>
@@ -87,9 +83,28 @@
             <div class="text-center">
                 <button type="submit" class="btn btn-primary mt-3">查詢</button>
             </div>
-        <div id="resultSection" class="result-chart">
-            <!-- 查詢結果和圖表將在這裡顯示 -->
-        </div>
+            <div id="resultSection" class="result-chart">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>氣溫</th>
+                        <th>濕度</th>
+                        <th>雨量</th>
+                        <!-- 添加更多列頭部 -->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="data : ${weatherDataList}">
+                        <td th:text="${data.date}">日期</td>
+                        <td th:text="${data.temperature}">氣溫</td>
+                        <td th:text="${data.humidity}">濕度</td>
+                        <td th:text="${data.rainfall}">雨量</td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </form>
     </div>
 
