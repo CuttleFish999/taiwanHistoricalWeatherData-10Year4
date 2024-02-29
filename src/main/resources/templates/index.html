@@ -98,20 +98,25 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>日期</th>
+<!--                    <th>開始年分</th>-->
+<!--                    <th>結束年分</th>-->
+                    <th>月份</th>
                     <th>氣溫</th>
                     <th>濕度</th>
-                    <th>雨量</th>
-                    <!-- 添加更多列頭部 -->
+                    <th>累積雨量</th>
+                    <th>平均風速</th>
+
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="data : ${weatherData}">
-                    <td th:text="${data.monthly}">日期</td>
-<!--                    <td th:text="${data.TemperatureMax}">最高氣溫</td>-->
-<!--                    <td th:text="${data.TemperatureMin}">最低氣溫</td>-->
-                    <td th:text="${data.TemperatureMean}">平均氣溫</td>
-<!--                    <td th:text="${data.rainfall}">雨量</td>-->
+<!--                    <td th:text="${data.StationStartYear + '年'}">開始年分</td>-->
+<!--                    <td th:text="${data.StationEndYear + '年'}">結束年分</td>-->
+                    <td th:text="${data.Month + ' 月'}">月份</td>
+                    <td th:text="${data.TemperatureMean + ' 度'}">平均氣溫</td>
+                    <td th:text="${data.HumidityMean + ' %'}">相對濕度</td>
+                    <td th:text="${data.Precipitation + ' mm'}">累積雨量</td>
+                    <td th:text="${data.WindSpeed + ' km/h'}">平均風速</td>
 
                 </tr>
                 </tbody>

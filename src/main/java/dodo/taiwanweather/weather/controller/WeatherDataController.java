@@ -54,31 +54,49 @@ public class WeatherDataController {
                 String stationName = station.getString("StationName");
 
                 JSONObject stats = location.getJSONObject("stationObsStatistics");
+
                 JSONObject airTemperature = stats.getJSONObject("AirTemperature");
-                JSONArray monthly = airTemperature.getJSONArray("monthly");
+                JSONObject relativeHumidity = stats.getJSONObject("RelativeHumidity");
+                JSONObject precipitation = stats.getJSONObject("Precipitation");
+                JSONObject windSpeed = stats.getJSONObject("WindSpeed");
 
 
-                JSONObject firstMonth = monthly.getJSONObject(0); // 月
+                JSONArray monthlyTemp = airTemperature.getJSONArray("monthly");
+                JSONArray monthlyHumidity = relativeHumidity.getJSONArray("monthly");
+                JSONArray monthlyPrecipitation = precipitation.getJSONArray("monthly");
+                JSONArray monthlywindSpeed = windSpeed.getJSONArray("monthly");
+
+                JSONObject firstMonthTemp = monthlyTemp.getJSONObject(0);
+                JSONObject firstMonthHumidity = monthlyHumidity.getJSONObject(0);
+                JSONObject firstMonthPrecipitation = monthlyPrecipitation.getJSONObject(0);
+                JSONObject firstMonthWindSpeed = monthlywindSpeed.getJSONObject(0);
+
+                int stationStartYear = airTemperature.getInt("StationStartYear"); //開始年
+                int stationEndYear = airTemperature.getInt("StationEndYear"); //結束年
+                Integer month = firstMonthTemp.has("Month") ? Integer.valueOf(firstMonthTemp.getInt("Month")) : null; // 月份
+                double tempMean = firstMonthTemp.has("Mean") ? firstMonthTemp.getDouble("Mean") : Double.NaN; // 平均温度
+                double humidityMean = firstMonthHumidity.has("Mean") ? firstMonthHumidity.getDouble("Mean") : Double.NaN; // 平均湿度
+                double Precipitation = firstMonthPrecipitation.has("Accumulation") ? firstMonthPrecipitation.getDouble("Accumulation") : Double.NaN; // 累積雨量
+                double WindSpeed = firstMonthWindSpeed.has("Mean") ? firstMonthWindSpeed.getDouble("Mean") : Double.NaN; // 平均風速
 
 
-                double month = firstMonth.has("Month") ? firstMonth.getDouble("Month") : Double.NaN;
-//                double tempMin = firstMonth.has("Minimum") ? firstMonth.getDouble("Minimum") : Double.NaN;
-                double tempMean = firstMonth.has("Mean") ? firstMonth.getDouble("Mean") : Double.NaN; //平均溫度
-//                double maxGE30Days = firstMonth.has("maxGE30Days") ? firstMonth.getDouble("maxGE30Days") : Double.NaN; //一個月內最高
-//                double meanGE25Days = firstMonth.has("meanGE25Days") ? firstMonth.getDouble("meanGE25Days") : Double.NaN; //一個月內最低
-//                double minLE10Days = firstMonth.has("minLE10Days") ? firstMonth.getDouble("minLE10Days") : Double.NaN;  //一個月內平均
 
-                // 封装
-                Map<String, Object> stationData = new HashMap<>();
-                stationData.put("StationName", stationName);
-                stationData.put("monthly", month);
-                stationData.put("TemperatureMean", tempMean); //平均溫度
+                Map<String, Object> weatherMap = new HashMap<>();
+                weatherMap.put("StationName", stationName);
+                weatherMap.put("StationStartYear", stationStartYear);
+                weatherMap.put("StationEndYear", stationEndYear);
+                weatherMap.put("Month", month);
+                weatherMap.put("TemperatureMean", tempMean);
+                weatherMap.put("HumidityMean", humidityMean);
+                weatherMap.put("Precipitation", Precipitation);
+                weatherMap.put("WindSpeed", WindSpeed);
 
-                weatherData.add(stationData);
+
+                weatherData.add(weatherMap);
             }
 
             if (!weatherData.isEmpty()) {
-                System.out.println(weatherData.get(0).get("Month"));
+                System.out.println(weatherData.get(0).get("WindSpeed"));
             }
 
             model.addAttribute("weatherData", weatherData);
