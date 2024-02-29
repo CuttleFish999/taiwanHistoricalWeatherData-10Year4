@@ -57,22 +57,26 @@ public class WeatherDataController {
 
                 JSONObject airTemperature = stats.getJSONObject("AirTemperature");
                 JSONObject relativeHumidity = stats.getJSONObject("RelativeHumidity");
+                JSONObject precipitation = stats.getJSONObject("Precipitation");
 
 
 
                 JSONArray monthlyTemp = airTemperature.getJSONArray("monthly");
                 JSONArray monthlyHumidity = relativeHumidity.getJSONArray("monthly");
+                JSONArray monthlyPrecipitation = precipitation.getJSONArray("monthly");
 
                 JSONObject firstMonthTemp = monthlyTemp.getJSONObject(0);
                 JSONObject firstMonthHumidity = monthlyHumidity.getJSONObject(0);
+                JSONObject firstMonthPrecipitation = monthlyPrecipitation.getJSONObject(0);
 
                 int stationStartYear = airTemperature.getInt("StationStartYear"); //開始年
                 int stationEndYear = airTemperature.getInt("StationEndYear"); //結束年
                 Integer month = firstMonthTemp.has("Month") ? Integer.valueOf(firstMonthTemp.getInt("Month")) : null; // 月份
                 double tempMean = firstMonthTemp.has("Mean") ? firstMonthTemp.getDouble("Mean") : Double.NaN; // 平均温度
                 double humidityMean = firstMonthHumidity.has("Mean") ? firstMonthHumidity.getDouble("Mean") : Double.NaN; // 平均湿度
+                double Precipitation = firstMonthPrecipitation.has("Accumulation") ? firstMonthPrecipitation.getDouble("Accumulation") : Double.NaN; // 累積雨量
 
-                // 创建一个 Map 来存储这一位置的所有天气数据
+
                 Map<String, Object> weatherMap = new HashMap<>();
                 weatherMap.put("StationName", stationName);
                 weatherMap.put("StationStartYear", stationStartYear);
@@ -80,8 +84,9 @@ public class WeatherDataController {
                 weatherMap.put("Month", month);
                 weatherMap.put("TemperatureMean", tempMean);
                 weatherMap.put("HumidityMean", humidityMean);
+                weatherMap.put("Precipitation", Precipitation);
 
-                // 将 Map 添加到列表中
+
                 weatherData.add(weatherMap);
             }
 
