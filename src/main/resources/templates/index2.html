@@ -39,7 +39,7 @@
 
                     <th:block th:each="station : ${weatherData}">
                         <th:block th:if="${station.StationName != null && station.StationName != ''}">
-                            <option th:value="${station.StationName}" th:text="${station.StationName}"></option>
+                            <option th:value="${station.StationID}" th:text="${station.StationName}"></option>
                         </th:block>
                     </th:block>
 
@@ -99,9 +99,7 @@
         <div class="text-center">
             <button type="submit" class="btn btn-primary mt-3">查詢</button>
         </div>
-        <div id="resultSection" class="result-chart">
-            <canvas id="resultChart"></canvas>
-        </div>
+        <div id="resultSection" style="width: 100%;height:400px;"></div>
 
     </form>
 </div>
@@ -109,6 +107,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const searchForm = document.getElementById('searchForm');
@@ -124,48 +124,45 @@
     });
 
     function fetchYourData() {
-
+        // API
         return fetch(`/getSingleMonthData`)
             .then(response => response.json());
     }
 
     function processChartData(data) {
-
+        // 處理數據
         const labels = data.map(item => `${item.Month}月`);
         const tempValues = data.map(item => item.TemperatureMean);
-
         return {
             labels: labels,
-            datasets: [{
-                label: '平均氣溫 (°C)',
-                data: tempValues,
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                fill: false
-            }]
+            tempValues: tempValues
         };
     }
 
-    function renderChart({ labels, datasets }) {
-        const ctx = document.getElementById('resultChart').getContext('2d');
-        if (window.myChart) {
-            window.myChart.destroy();
-        }
-        window.myChart = new Chart(ctx, {
-            type: 'line',
-            data: { labels, datasets },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: false
-                    }
-                }
-            }
-        });
-    }
+    function renderChart(processedData) {
+        var myChart = echarts.init(document.getElementById('resultSection'));
 
+        var option = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            xAxis: {
+                type: 'category',
+                data: processedData.labels
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: processedData.tempValues,
+                type: 'line',
+                smooth: true,
+                areaStyle: {}
+            }]
+        };
+
+        myChart.setOption(option);
+    }
 </script>
 
 </body>

@@ -33,7 +33,7 @@ public class WeatherDataController {
     @GetMapping("/home")
     public String home(Model model) {
 
-        List<Map<String, Object>> weatherData = weatherDateService.fetchWeatherData();
+        List<Map<String, Object>> weatherData = weatherDateService.fetchStationData();
         model.addAttribute("weatherData", weatherData);
 
         return "index2";

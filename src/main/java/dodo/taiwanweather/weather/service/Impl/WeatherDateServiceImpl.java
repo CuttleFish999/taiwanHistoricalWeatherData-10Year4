@@ -19,6 +19,43 @@ import java.util.Map;
 public class WeatherDateServiceImpl implements WeatherDateService {
 
     @Override
+    public List<Map<String, Object>> fetchStationData() {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://opendata.cwa.gov.tw/api/v1/rest/datastore/C-B0027-001?Authorization=CWA-2FD4BAFB-A6F7-4127-9D46-F2A699F51C10&format=JSON&weatherElement=AirPressure&Month=1"))
+                .header("accept", "application/json")
+                .build();
+
+        List<Map<String, Object>> weatherData = new ArrayList<>();
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            String responseBody = response.body();
+
+            JSONObject jsonObject = new JSONObject(responseBody);
+            JSONArray locations = jsonObject.getJSONObject("records").getJSONObject("data").getJSONObject("surfaceObs").getJSONArray("location");
+
+            for (int i = 0; i < locations.length(); i++) {
+                JSONObject location = locations.getJSONObject(i);
+                JSONObject stationObject = location.getJSONObject("station");
+                String stationName = stationObject.getString("StationName");
+                String stationID = stationObject.getString("StationID");
+
+                Map<String, Object> weatherMap = new HashMap<>();
+                weatherMap.put("StationName", stationName);
+                weatherMap.put("StationID", stationID);
+                weatherData.add(weatherMap);
+            }
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return weatherData;
+    }
+
+
+    @Override
     public List<Map<String, Object>> fetchWeatherData() {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -39,6 +76,7 @@ public class WeatherDateServiceImpl implements WeatherDateService {
                 JSONObject location = locations.getJSONObject(i);
                 JSONObject station = location.getJSONObject("station");
                 String stationName = station.getString("StationName");
+                String stationID = station.getString("StationID");
 
                 JSONObject stats = location.getJSONObject("stationObsStatistics");
 
@@ -77,9 +115,12 @@ public class WeatherDateServiceImpl implements WeatherDateService {
                     Map<String, Object> weatherMap = new HashMap<>();
                     if (monthCount == 0) {
                         weatherMap.put("StationName", stationName);
+                        weatherMap.put("StationID", stationID);
                     } else {
                         weatherMap.put("StationName", "");
+                        weatherMap.put("StationID", "");
                     }
+
                     weatherMap.put("StationStartYear", stationStartYear);
                     weatherMap.put("StationEndYear", stationEndYear);
                     weatherMap.put("Month", month);
