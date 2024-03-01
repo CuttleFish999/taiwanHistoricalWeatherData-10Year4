@@ -100,37 +100,9 @@
             <button type="submit" class="btn btn-primary mt-3">查詢</button>
         </div>
         <div id="resultSection" class="result-chart">
-            <table class="table">
-                <thead>
-                <tr>
-<!--                    <th>開始年分</th>-->
-<!--                    <th>結束年分</th>-->
-                    <th>月份</th>
-                    <th>氣溫</th>
-                    <th>濕度</th>
-                    <th>累積雨量</th>
-                    <th>平均風速</th>
-                    <th>平均氣壓</th>
-                    <th>日照指數</th>
-
-                </tr>
-                </thead>
-                <tbody>
-<!--                <tr th:each="data : ${weatherData}">-->
-<!--                    <td th:text="${data.StationStartYear + '年'}">開始年分</td>-->
-<!--                    <td th:text="${data.StationEndYear + '年'}">結束年分</td>-->
-<!--                    <td th:text="${data.Month + ' 月'}">月份</td>-->
-<!--                    <td th:text="${data.TemperatureMean + ' 度'}">平均氣溫</td>-->
-<!--                    <td th:text="${data.HumidityMean + ' %'}">相對濕度</td>-->
-<!--                    <td th:text="${data.Precipitation + ' mm'}">累積雨量</td>-->
-<!--                    <td th:text="${data.WindSpeed + ' km/h'}">平均風速</td>-->
-<!--                    <td th:text="${data.AirPressure + ' Pa'}">平均氣壓</td>-->
-<!--                    <td th:text="${data.SunshineDuration + ' hr'}">日照指數</td>-->
-
-                </tr>
-                </tbody>
-            </table>
+            <canvas id="resultChart"></canvas>
         </div>
+
     </form>
 </div>
 
@@ -142,18 +114,13 @@
         const searchForm = document.getElementById('searchForm');
 
         searchForm.addEventListener('submit', function (e) {
-            e.preventDefault(); // 阻止默認提交行為
+            e.preventDefault();
 
-            // 獲取表單輸入值
             const city = document.getElementById('city').value;
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
-            const metrics = [];
-            document.querySelectorAll('input[type="checkbox"]:checked').forEach((checkbox) => {
-                metrics.push(checkbox.value);
-            });
+            const metrics = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
 
-            // 構建查詢參數
             const queryParams = new URLSearchParams({
                 city,
                 startDate,
@@ -161,35 +128,73 @@
                 metrics: metrics.join(',')
             }).toString();
 
-            // 發送數據查詢請求
-            fetch(`/getSingleMonthData?${queryParams}`, {
-                method: 'GET', //
-            })
+            fetch(`/getSingleMonthData?${queryParams}`)
                 .then(response => response.json())
                 .then(data => {
-                    renderData(data); // 渲染表格
+                    const processedData = processChartData(data);
+                    renderChart(processedData);
                 })
                 .catch(error => console.error('Error:', error));
         });
     });
 
-    function renderData(data) {
-        const resultSection = document.getElementById('resultSection').getElementsByTagName('tbody')[0];
-        resultSection.innerHTML = ''; // 清空
+    function processChartData(data) {
 
-        data.forEach(item => {
-            const row = document.createElement('tr');
+        const labels = data.map(item => item.date); // 日期
+        const datasets = [
+            {
+                label: '氣溫',
+                data: data.map(item => item.temperature),
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                yAxisID: 'y',
+            },
+            {
+                label: '濕度',
+                data: data.map(item => item.humidity),
+                borderColor: 'rgb(54, 162, 235)',
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                yAxisID: 'y1',
+            }
 
-            Object.keys(item).forEach(key => {
-                const cell = document.createElement('td');
-                cell.textContent = item[key];
-                row.appendChild(cell);
-            });
+        ];
 
-            resultSection.appendChild(row);
-        });
+        return { labels, datasets };
     }
 
+    function renderChart({ labels, datasets }) {
+        const ctx = document.getElementById('resultChart').getContext('2d');
+        if (window.myChart instanceof Chart) {
+            window.myChart.destroy();
+        }
+        window.myChart = new Chart(ctx, {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        // 格式化軸標籤
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return value + '%';
+                            }
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    }
+                }
+            }
+        });
+    }
 </script>
 
 </body>
