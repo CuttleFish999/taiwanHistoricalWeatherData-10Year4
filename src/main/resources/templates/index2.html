@@ -112,22 +112,14 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Use a more specific selector if necessary, e.g., '#yourSelectId'
+
         const stationSelect = document.querySelector("select");
         const query_btn = document.getElementById("query-btn");
 
         if(query_btn && stationSelect) {
             query_btn.addEventListener("click" , function(e){
-                let stationSelectVal = stationSelect.value; // 正確獲取當前選中的值
+                let stationSelectVal = stationSelect.value;
                 fetchYourData(stationSelectVal).then(data => {
-                    const processedData = processChartData(data);
-                    renderChart(processedData);
-                }).catch(error => console.error('Error:', error));
-            });
-
-            stationSelect.addEventListener("change" , function(e){
-                let selectedValue = stationSelect.value; // 正確獲取當前選中的值
-                fetchYourData(selectedValue).then(data => {
                     const processedData = processChartData(data);
                     renderChart(processedData);
                 }).catch(error => console.error('Error:', error));
@@ -138,7 +130,7 @@
     });
 
     function fetchYourData(selectedValue) {
-        console.log(selectedValue); // 正確的打印值
+        console.log(selectedValue);
 
         return fetch(`/getSingleMonthData/${selectedValue}`)
             .then(response => {
@@ -148,6 +140,7 @@
                 return response.json();
             });
     }
+
 
 
     function processChartData(data) {
