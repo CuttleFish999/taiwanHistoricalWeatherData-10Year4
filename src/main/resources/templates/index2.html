@@ -116,16 +116,16 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="data : ${weatherData}">
+<!--                <tr th:each="data : ${weatherData}">-->
 <!--                    <td th:text="${data.StationStartYear + '年'}">開始年分</td>-->
 <!--                    <td th:text="${data.StationEndYear + '年'}">結束年分</td>-->
-                    <td th:text="${data.Month + ' 月'}">月份</td>
-                    <td th:text="${data.TemperatureMean + ' 度'}">平均氣溫</td>
-                    <td th:text="${data.HumidityMean + ' %'}">相對濕度</td>
-                    <td th:text="${data.Precipitation + ' mm'}">累積雨量</td>
-                    <td th:text="${data.WindSpeed + ' km/h'}">平均風速</td>
-                    <td th:text="${data.AirPressure + ' Pa'}">平均氣壓</td>
-                    <td th:text="${data.SunshineDuration + ' hr'}">日照指數</td>
+<!--                    <td th:text="${data.Month + ' 月'}">月份</td>-->
+<!--                    <td th:text="${data.TemperatureMean + ' 度'}">平均氣溫</td>-->
+<!--                    <td th:text="${data.HumidityMean + ' %'}">相對濕度</td>-->
+<!--                    <td th:text="${data.Precipitation + ' mm'}">累積雨量</td>-->
+<!--                    <td th:text="${data.WindSpeed + ' km/h'}">平均風速</td>-->
+<!--                    <td th:text="${data.AirPressure + ' Pa'}">平均氣壓</td>-->
+<!--                    <td th:text="${data.SunshineDuration + ' hr'}">日照指數</td>-->
 
                 </tr>
                 </tbody>
@@ -142,7 +142,7 @@
         const searchForm = document.getElementById('searchForm');
 
         searchForm.addEventListener('submit', function (e) {
-            e.preventDefault(); // 阻止表單的默認提交行為
+            e.preventDefault(); // 阻止默認提交行為
 
             // 獲取表單輸入值
             const city = document.getElementById('city').value;
@@ -162,32 +162,34 @@
             }).toString();
 
             // 發送數據查詢請求
-            fetch(`your-backend-api-url?${queryParams}`)
+            fetch(`/getSingleMonthData?${queryParams}`, {
+                method: 'GET', //
+            })
                 .then(response => response.json())
                 .then(data => {
-                    renderChart(data); // 使用查詢結果渲染圖表
+                    renderData(data); // 渲染表格
                 })
                 .catch(error => console.error('Error:', error));
         });
     });
 
-    function renderChart(data) {
-        const ctx = document.getElementById('resultSection').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line', // 這裡使用折線圖，可根據需求更改
-            data: {
-                labels: data.labels, // 假設labels是日期或時間
-                datasets: data.datasets // 假設datasets包含了各氣象數據的數據集
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
+    function renderData(data) {
+        const resultSection = document.getElementById('resultSection').getElementsByTagName('tbody')[0];
+        resultSection.innerHTML = ''; // 清空
+
+        data.forEach(item => {
+            const row = document.createElement('tr');
+
+            Object.keys(item).forEach(key => {
+                const cell = document.createElement('td');
+                cell.textContent = item[key];
+                row.appendChild(cell);
+            });
+
+            resultSection.appendChild(row);
         });
     }
+
 </script>
 
 </body>
