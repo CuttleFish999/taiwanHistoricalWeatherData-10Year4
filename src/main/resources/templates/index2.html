@@ -39,6 +39,7 @@
 
                     <th:block th:each="station : ${weatherData}">
                         <th:block th:if="${station.StationName != null && station.StationName != ''}">
+                            <!-- Note: Removed the id attribute -->
                             <option th:value="${station.StationID}" th:text="${station.StationName}"></option>
                         </th:block>
                     </th:block>
@@ -97,7 +98,7 @@
             </div>
         </div>
         <div class="text-center">
-            <button type="submit" class="btn btn-primary mt-3">查詢</button>
+            <button type="button" id="query-btn" onclick="" class="btn btn-primary mt-3">查詢</button>
         </div>
         <div id="resultSection" style="width: 100%;height:400px;"></div>
 
@@ -111,23 +112,36 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const searchForm = document.getElementById('searchForm');
 
-        searchForm.addEventListener('submit', function (e) {
-            e.preventDefault();
+        const stationSelect = document.querySelector("select");
+        const query_btn = document.getElementById("query-btn");
 
-            fetchYourData().then(data => {
-                const processedData = processChartData(data);
-                renderChart(processedData);
-            }).catch(error => console.error('Error:', error));
-        });
+        if(query_btn && stationSelect) {
+            query_btn.addEventListener("click" , function(e){
+                let stationSelectVal = stationSelect.value;
+                fetchYourData(stationSelectVal).then(data => {
+                    const processedData = processChartData(data);
+                    renderChart(processedData);
+                }).catch(error => console.error('Error:', error));
+            });
+        } else {
+            console.error("找不到元素：stationSelect 或 query-btn");
+        }
     });
 
-    function fetchYourData() {
-        // API
-        return fetch(`/getSingleMonthData`)
-            .then(response => response.json());
+    function fetchYourData(selectedValue) {
+        console.log(selectedValue);
+
+        return fetch(`/getSingleMonthData/${selectedValue}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            });
     }
+
+
 
     function processChartData(data) {
         // 處理數據
@@ -140,9 +154,9 @@
     }
 
     function renderChart(processedData) {
-        var myChart = echarts.init(document.getElementById('resultSection'));
+        let myChart = echarts.init(document.getElementById('resultSection'));
 
-        var option = {
+        let option = {
             tooltip: {
                 trigger: 'axis'
             },
@@ -163,6 +177,7 @@
 
         myChart.setOption(option);
     }
+
 </script>
 
 </body>

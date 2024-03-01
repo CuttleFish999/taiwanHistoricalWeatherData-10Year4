@@ -56,12 +56,19 @@ public class WeatherDateServiceImpl implements WeatherDateService {
 
 
     @Override
-    public List<Map<String, Object>> fetchWeatherData() {
+    public List<Map<String, Object>> fetchWeatherData(String stationId) {
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://opendata.cwa.gov.tw/api/v1/rest/datastore/C-B0027-001?Authorization=CWA-2FD4BAFB-A6F7-4127-9D46-F2A699F51C10&limit=1&format=JSON"))
-                .header("accept", "application/json")
-                .build();
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+                .header("accept", "application/json");
+
+        if (stationId == null) {
+            requestBuilder.uri(URI.create("https://opendata.cwa.gov.tw/api/v1/rest/datastore/C-B0027-001?Authorization=CWA-2FD4BAFB-A6F7-4127-9D46-F2A699F51C10&limit=1&format=JSON"));
+        }else{
+            System.out.println("查詢站號: " + stationId);
+            requestBuilder.uri(URI.create("https://opendata.cwa.gov.tw/api/v1/rest/datastore/C-B0027-001?Authorization=CWA-2FD4BAFB-A6F7-4127-9D46-F2A699F51C10&limit=1&format=JSON&StationID=" + stationId));
+        }
+
+        HttpRequest request = requestBuilder.build();
 
         List<Map<String, Object>> weatherData = new ArrayList<>();
 
