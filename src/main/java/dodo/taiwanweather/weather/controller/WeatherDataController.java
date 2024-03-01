@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
@@ -39,10 +40,10 @@ public class WeatherDataController {
         return "index2";
     }
 
-    @GetMapping("/getSingleMonthData")
+    @GetMapping("/getSingleMonthData/{stationId}")
     @ResponseBody
-    public List<Map<String, Object>> getSingleMonthData(){
-        List<Map<String, Object>> singleMonthData = weatherDateService.fetchWeatherData();
+    public List<Map<String, Object>> getSingleMonthData(@PathVariable String stationId){
+        List<Map<String, Object>> singleMonthData = weatherDateService.fetchWeatherData(stationId);
         return singleMonthData;
 
     }

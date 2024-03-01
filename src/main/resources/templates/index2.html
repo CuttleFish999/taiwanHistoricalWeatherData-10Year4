@@ -39,7 +39,7 @@
 
                     <th:block th:each="station : ${weatherData}">
                         <th:block th:if="${station.StationName != null && station.StationName != ''}">
-                            <option th:value="${station.StationID}" th:text="${station.StationName}"></option>
+                            <option id="stationSelect" th:value="${station.StationID}" th:text="${station.StationName}"></option>
                         </th:block>
                     </th:block>
 
@@ -97,7 +97,7 @@
             </div>
         </div>
         <div class="text-center">
-            <button type="submit" class="btn btn-primary mt-3">查詢</button>
+            <button type="button" id="query-btn" onclick="" class="btn btn-primary mt-3">查詢</button>
         </div>
         <div id="resultSection" style="width: 100%;height:400px;"></div>
 
@@ -111,24 +111,38 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const searchForm = document.getElementById('searchForm');
+        const stationSelect = document.getElementById("stationSelect");
+        const query_btn = document.getElementById("query-btn");
 
-        searchForm.addEventListener('submit', function (e) {
-            e.preventDefault();
+        if(query_btn && stationSelect) {
+            query_btn.addEventListener("click" , function(e){
+                let stationSelectVal = stationSelect.value;
+                fetchYourData(stationSelectVal).then(data => {
+                    const processedData = processChartData(data);
+                    renderChart(processedData);
+                }).catch(error => console.error('Error:', error));
+            });
 
-            fetchYourData().then(data => {
-                const processedData = processChartData(data);
-                renderChart(processedData);
-            }).catch(error => console.error('Error:', error));
-        });
+            // 如果您需要在選擇站點時做某些事情，您可以在這裡添加代碼
+            stationSelect.addEventListener("change" , function(e){
+                // 當選擇站點變化時執行的代碼
+            });
+        } else {
+            console.error("找不到元素：stationSelect 或 query-btn");
+        }
     });
 
-    function fetchYourData() {
-        // API
-        return fetch(`/getSingleMonthData`)
-            .then(response => response.json());
-    }
+    function fetchYourData(stationSelectVal) {
+        console.log(stationSelectVal); // 正確的打印值
 
+        return fetch(`/getSingleMonthData/${stationSelectVal}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            });
+    }
     function processChartData(data) {
         // 處理數據
         const labels = data.map(item => `${item.Month}月`);
@@ -140,9 +154,9 @@
     }
 
     function renderChart(processedData) {
-        var myChart = echarts.init(document.getElementById('resultSection'));
+        let myChart = echarts.init(document.getElementById('resultSection'));
 
-        var option = {
+        let option = {
             tooltip: {
                 trigger: 'axis'
             },
@@ -163,6 +177,7 @@
 
         myChart.setOption(option);
     }
+
 </script>
 
 </body>
