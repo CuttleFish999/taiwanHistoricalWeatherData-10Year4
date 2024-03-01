@@ -39,7 +39,7 @@
 
                     <th:block th:each="station : ${weatherData}">
                         <th:block th:if="${station.StationName != null && station.StationName != ''}">
-                            <option th:value="${station.StationName}" th:text="${station.StationName}"></option>
+                            <option th:value="${station.StationID}" th:text="${station.StationName}"></option>
                         </th:block>
                     </th:block>
 

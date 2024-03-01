@@ -39,6 +39,7 @@ public class WeatherDateServiceImpl implements WeatherDateService {
                 JSONObject location = locations.getJSONObject(i);
                 JSONObject station = location.getJSONObject("station");
                 String stationName = station.getString("StationName");
+                String stationID = station.getString("StationID");
 
                 JSONObject stats = location.getJSONObject("stationObsStatistics");
 
@@ -77,9 +78,12 @@ public class WeatherDateServiceImpl implements WeatherDateService {
                     Map<String, Object> weatherMap = new HashMap<>();
                     if (monthCount == 0) {
                         weatherMap.put("StationName", stationName);
+                        weatherMap.put("StationID", stationID);
                     } else {
                         weatherMap.put("StationName", "");
+                        weatherMap.put("StationID", "");
                     }
+
                     weatherMap.put("StationStartYear", stationStartYear);
                     weatherMap.put("StationEndYear", stationEndYear);
                     weatherMap.put("Month", month);
