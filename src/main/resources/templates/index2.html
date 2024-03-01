@@ -116,85 +116,56 @@
         searchForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const city = document.getElementById('city').value;
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            const metrics = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
-
-            const queryParams = new URLSearchParams({
-                city,
-                startDate,
-                endDate,
-                metrics: metrics.join(',')
-            }).toString();
-
-            fetch(`/getSingleMonthData?${queryParams}`)
-                .then(response => response.json())
-                .then(data => {
-                    const processedData = processChartData(data);
-                    renderChart(processedData);
-                })
-                .catch(error => console.error('Error:', error));
+            fetchYourData().then(data => {
+                const processedData = processChartData(data);
+                renderChart(processedData);
+            }).catch(error => console.error('Error:', error));
         });
     });
 
+    function fetchYourData() {
+
+        return fetch(`/getSingleMonthData`)
+            .then(response => response.json());
+    }
+
     function processChartData(data) {
 
-        const labels = data.map(item => item.date); // 日期
-        const datasets = [
-            {
-                label: '氣溫',
-                data: data.map(item => item.temperature),
+        const labels = data.map(item => `${item.Month}月`);
+        const tempValues = data.map(item => item.TemperatureMean);
+
+        return {
+            labels: labels,
+            datasets: [{
+                label: '平均氣溫 (°C)',
+                data: tempValues,
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                yAxisID: 'y',
-            },
-            {
-                label: '濕度',
-                data: data.map(item => item.humidity),
-                borderColor: 'rgb(54, 162, 235)',
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                yAxisID: 'y1',
-            }
-
-        ];
-
-        return { labels, datasets };
+                fill: false
+            }]
+        };
     }
 
     function renderChart({ labels, datasets }) {
         const ctx = document.getElementById('resultChart').getContext('2d');
-        if (window.myChart instanceof Chart) {
+        if (window.myChart) {
             window.myChart.destroy();
         }
         window.myChart = new Chart(ctx, {
             type: 'line',
             data: { labels, datasets },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        // 格式化軸標籤
-                        ticks: {
-                            callback: function(value, index, values) {
-                                return value + '%';
-                            }
-                        },
-                        grid: {
-                            drawOnChartArea: false,
-                        },
+                        beginAtZero: false
                     }
                 }
             }
         });
     }
+
 </script>
 
 </body>

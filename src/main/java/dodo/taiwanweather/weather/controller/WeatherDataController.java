@@ -28,8 +28,6 @@ public class WeatherDataController {
     @Autowired
     private WeatherDateService weatherDateService;
 
-    @Autowired
-    private RestTemplate restTemplate;
 
 
     @GetMapping("/home")
