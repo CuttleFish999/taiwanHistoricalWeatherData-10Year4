@@ -39,7 +39,8 @@
 
                     <th:block th:each="station : ${weatherData}">
                         <th:block th:if="${station.StationName != null && station.StationName != ''}">
-                            <option id="stationSelect" th:value="${station.StationID}" th:text="${station.StationName}"></option>
+                            <!-- Note: Removed the id attribute -->
+                            <option th:value="${station.StationID}" th:text="${station.StationName}"></option>
                         </th:block>
                     </th:block>
 
@@ -111,31 +112,35 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const stationSelect = document.getElementById("stationSelect");
+        // Use a more specific selector if necessary, e.g., '#yourSelectId'
+        const stationSelect = document.querySelector("select");
         const query_btn = document.getElementById("query-btn");
 
         if(query_btn && stationSelect) {
             query_btn.addEventListener("click" , function(e){
-                let stationSelectVal = stationSelect.value;
+                let stationSelectVal = stationSelect.value; // 正確獲取當前選中的值
                 fetchYourData(stationSelectVal).then(data => {
                     const processedData = processChartData(data);
                     renderChart(processedData);
                 }).catch(error => console.error('Error:', error));
             });
 
-            // 如果您需要在選擇站點時做某些事情，您可以在這裡添加代碼
             stationSelect.addEventListener("change" , function(e){
-                // 當選擇站點變化時執行的代碼
+                let selectedValue = stationSelect.value; // 正確獲取當前選中的值
+                fetchYourData(selectedValue).then(data => {
+                    const processedData = processChartData(data);
+                    renderChart(processedData);
+                }).catch(error => console.error('Error:', error));
             });
         } else {
             console.error("找不到元素：stationSelect 或 query-btn");
         }
     });
 
-    function fetchYourData(stationSelectVal) {
-        console.log(stationSelectVal); // 正確的打印值
+    function fetchYourData(selectedValue) {
+        console.log(selectedValue); // 正確的打印值
 
-        return fetch(`/getSingleMonthData/${stationSelectVal}`)
+        return fetch(`/getSingleMonthData/${selectedValue}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -143,6 +148,8 @@
                 return response.json();
             });
     }
+
+
     function processChartData(data) {
         // 處理數據
         const labels = data.map(item => `${item.Month}月`);
