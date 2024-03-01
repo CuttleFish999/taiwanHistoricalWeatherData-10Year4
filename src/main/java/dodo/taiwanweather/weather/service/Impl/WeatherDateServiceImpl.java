@@ -1,76 +1,103 @@
 package dodo.taiwanweather.weather.service.Impl;
+
 import dodo.taiwanweather.weather.service.WeatherDateService;
 import org.json.JSONObject;
 import org.json.JSONArray;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.FileReader;
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class WeatherDateServiceImpl implements WeatherDateService {
 
-    @Autowired
-    private RestTemplate restTemplate;
+    @Override
+    public List<Map<String, Object>> fetchWeatherData() {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://opendata.cwa.gov.tw/api/v1/rest/datastore/C-B0027-001?Authorization=CWA-2FD4BAFB-A6F7-4127-9D46-F2A699F51C10&limit=1&format=JSON"))
+                .header("accept", "application/json")
+                .build();
 
-//  本地
-    public List<String> getStationNames(String filePath) {
-        List<String> stationNames = new ArrayList<>();
+        List<Map<String, Object>> weatherData = new ArrayList<>();
 
-        StringBuilder jsonData = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                jsonData.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return stationNames;
-        }
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            String responseBody = response.body();
 
-        JSONObject jsonObject = new JSONObject(jsonData.toString());
-        JSONObject records = jsonObject.getJSONObject("records");
-        JSONObject data = records.getJSONObject("data");
-        JSONObject surfaceObs = data.getJSONObject("surfaceObs");
-        JSONArray locations = surfaceObs.getJSONArray("location");
+            JSONObject jsonObject = new JSONObject(responseBody);
+            JSONArray locations = jsonObject.getJSONObject("records").getJSONObject("data").getJSONObject("surfaceObs").getJSONArray("location");
 
-        for (int i = 0; i < locations.length(); i++) {
-            JSONObject location = locations.getJSONObject(i);
-            JSONObject station = location.getJSONObject("station");
-            String stationName = station.getString("StationName");
-            stationNames.add(stationName);
-        }
+            for (int i = 0; i < locations.length(); i++) {
+                JSONObject location = locations.getJSONObject(i);
+                JSONObject station = location.getJSONObject("station");
+                String stationName = station.getString("StationName");
 
-        return stationNames;
-    }
+                JSONObject stats = location.getJSONObject("stationObsStatistics");
 
-        public List<String> getStationNames() {
-            List<String> stationNames = new ArrayList<>();
-            String apiUrl = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/O_A0001_001?Authorization=你的API金鑰";
+                JSONObject airTemperature = stats.getJSONObject("AirTemperature");
+                JSONObject relativeHumidity = stats.getJSONObject("RelativeHumidity");
+                JSONObject precipitation = stats.getJSONObject("Precipitation");
+                JSONObject windSpeed = stats.getJSONObject("WindSpeed");
+                JSONObject airPressure = stats.getJSONObject("AirPressure");
+                JSONObject sunshineDuration = stats.getJSONObject("SunshineDuration");
 
-            try {
-                ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
-                String jsonData = response.getBody();
+                JSONArray monthlyTemp = airTemperature.getJSONArray("monthly");
+                JSONArray monthlyHumidity = relativeHumidity.getJSONArray("monthly");
+                JSONArray monthlyPrecipitation = precipitation.getJSONArray("monthly");
+                JSONArray monthlyWindSpeed = windSpeed.getJSONArray("monthly");
+                JSONArray monthlyAirPressure = airPressure.getJSONArray("monthly");
+                JSONArray monthlySunshineDuration = sunshineDuration.getJSONArray("monthly");
 
-                JSONObject jsonObject = new JSONObject(jsonData);
-                JSONObject result = jsonObject.getJSONObject("result");
-                JSONArray records = result.getJSONArray("records");
+                for (int monthCount = 0; monthCount < 12; monthCount++) {
+                    JSONObject firstMonthTemp = monthlyTemp.getJSONObject(monthCount);
+                    JSONObject firstMonthHumidity = monthlyHumidity.getJSONObject(monthCount);
+                    JSONObject firstMonthPrecipitation = monthlyPrecipitation.getJSONObject(monthCount);
+                    JSONObject firstMonthWindSpeed = monthlyWindSpeed.getJSONObject(monthCount);
+                    JSONObject firstMonthAirPressure = monthlyAirPressure.getJSONObject(monthCount);
+                    JSONObject firstMonthSunshineDuration = monthlySunshineDuration.getJSONObject(monthCount);
 
-                for (int i = 0; i < records.length(); i++) {
-                    JSONObject record = records.getJSONObject(i);
-                    String stationName = record.getString("stationName");
-                    stationNames.add(stationName);
+                    int stationStartYear = airTemperature.getInt("StationStartYear");
+                    int stationEndYear = airTemperature.getInt("StationEndYear");
+                    Integer month = firstMonthTemp.has("Month") ? firstMonthTemp.getInt("Month") : null;
+                    double tempMean = firstMonthTemp.has("Mean") ? firstMonthTemp.getDouble("Mean") : Double.NaN;
+                    double humidityMean = firstMonthHumidity.has("Mean") ? firstMonthHumidity.getDouble("Mean") : Double.NaN;
+                    double precipitationAmount = firstMonthPrecipitation.has("Accumulation") ? firstMonthPrecipitation.getDouble("Accumulation") : Double.NaN;
+                    double windSpeedMean = firstMonthWindSpeed.has("Mean") ? firstMonthWindSpeed.getDouble("Mean") : Double.NaN;
+                    double airPressureMean = firstMonthAirPressure.has("Mean") ? firstMonthAirPressure.getDouble("Mean") : Double.NaN;
+                    double sunshineDurationTotal = firstMonthSunshineDuration.has("Total") ? firstMonthSunshineDuration.getDouble("Total") : Double.NaN;
+
+                    Map<String, Object> weatherMap = new HashMap<>();
+                    if (monthCount == 0) {
+                        weatherMap.put("StationName", stationName);
+                    } else {
+                        weatherMap.put("StationName", "");
+                    }
+                    weatherMap.put("StationStartYear", stationStartYear);
+                    weatherMap.put("StationEndYear", stationEndYear);
+                    weatherMap.put("Month", month);
+                    weatherMap.put("TemperatureMean", tempMean);
+                    weatherMap.put("HumidityMean", humidityMean);
+                    weatherMap.put("Precipitation", precipitationAmount);
+                    weatherMap.put("WindSpeed", windSpeedMean);
+                    weatherMap.put("AirPressure", airPressureMean);
+                    weatherMap.put("SunshineDuration", sunshineDurationTotal);
+
+                    weatherData.add(weatherMap);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-
-            return stationNames;
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("執行失敗", e);
         }
 
+        return weatherData;
+    }
 }
