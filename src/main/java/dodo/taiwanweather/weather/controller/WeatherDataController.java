@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 @Controller
@@ -27,8 +28,6 @@ public class WeatherDataController {
     @Autowired
     private WeatherDateService weatherDateService;
 
-    @Autowired
-    private RestTemplate restTemplate;
 
 
     @GetMapping("/home")
@@ -37,7 +36,14 @@ public class WeatherDataController {
         List<Map<String, Object>> weatherData = weatherDateService.fetchWeatherData();
         model.addAttribute("weatherData", weatherData);
 
-        return "index";
+        return "index2";
     }
 
+    @GetMapping("/getSingleMonthData")
+    @ResponseBody
+    public List<Map<String, Object>> getSingleMonthData(){
+        List<Map<String, Object>> singleMonthData = weatherDateService.fetchWeatherData();
+        return singleMonthData;
+
+    }
 }
