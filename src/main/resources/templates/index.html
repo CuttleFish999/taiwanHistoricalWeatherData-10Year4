@@ -142,42 +142,42 @@
                     取消選擇
                 </button>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="temperature" id="temperature">
+                    <input class="form-check-input" type="checkbox" value="temperature" id="temperature" checked>
                     <img class="icon" th:src="@{/icon/index/thermometer.png}">
                     <label class="form-check-label" for="temperature">
                         氣溫
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="humidity" id="humidity">
+                    <input class="form-check-input" type="checkbox" value="humidity" id="humidity" checked>
                     <img class="icon" th:src="@{/icon/index/humidity.png}">
                     <label class="form-check-label" for="humidity">
                         濕度
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="rainfall" id="rainfall">
+                    <input class="form-check-input" type="checkbox" value="rainfall" id="rainfall" checked>
                     <img class="icon" th:src="@{/icon/index/rainfall.png}">
                     <label class="form-check-label" for="rainfall">
                         雨量
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="windSpeed" id="windSpeed">
+                    <input class="form-check-input" type="checkbox" value="windSpeed" id="windSpeed" checked>
                     <img class="icon" th:src="@{/icon/index/storm.png}">
                     <label class="form-check-label" for="windSpeed">
                         風速
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="pressure" id="airPressure">
+                    <input class="form-check-input" type="checkbox" value="pressure" id="airPressure" checked>
                     <img class="icon" th:src="@{/icon/index/cloudy.png}">
                     <label class="form-check-label" for="airPressure">
                         氣壓
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="sunshine" id="sunshine">
+                    <input class="form-check-input" type="checkbox" value="sunshine" id="sunshine" checked>
                     <img class="icon" th:src="@{/icon/index/uv-index.png}">
                     <label class="form-check-label" for="sunshine">
                         日照指數
@@ -188,16 +188,16 @@
         </div>
         <hr>
 
-        <div id="information-div">
-            <ul>
-                <li> 氣溫:</li>
-                <li> 濕度:</li>
-                <li> 雨量:</li>
-                <li> 風速:</li>
-                <li> 氣壓:</li>
-                <li> 日照指數:</li>
-            </ul>
-        </div>
+<!--        <div id="information-div">-->
+<!--            <ul>-->
+<!--                <li> 氣溫:</li>-->
+<!--                <li> 濕度:</li>-->
+<!--                <li> 雨量:</li>-->
+<!--                <li> 風速:</li>-->
+<!--                <li> 氣壓:</li>-->
+<!--                <li> 日照指數:</li>-->
+<!--            </ul>-->
+<!--        </div>-->
 
         <div class="text-center">
             <button type="button" id="query-btn" onclick="" class="btn btn-primary mt-3">查詢</button>
@@ -215,6 +215,14 @@
     </form>
 
     <div id="nav-div">
+
+<!--        <th:block th:each="station : ${weatherData}">-->
+<!--            <th:block th:if="${station.StationName != null && station.StationName != ''}">-->
+<!--                <option th:value="${station.StationID}" th:text="${station.StationName}"></option>-->
+<!--            </th:block>-->
+<!--        </th:block>-->
+
+        <span id="current-city">當前城市: </span>
         <a href="#airTemperatureResultSection">
             <img class="nav-icon" th:src="@{/icon/index/thermometer.png}" alt="">
         </a>
@@ -260,6 +268,13 @@
 <script th:src="@{/js/indexJS/airPressure.js}"></script>
 <script th:src="@{/js/indexJS/sunshineDuration.js}"></script>
 
+<script>
+    const citySelect = document.getElementById("city");
+    const currentSpan =document.getElementById("current-city");
+    citySelect.addEventListener("click", function() {
+        currentSpan.innerText = `當前城市: ${this.options[this.selectedIndex].text}`;
+    });
+</script>
 
 </body>
 </html>
