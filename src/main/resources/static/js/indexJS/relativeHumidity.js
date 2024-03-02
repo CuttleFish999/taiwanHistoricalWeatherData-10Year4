@@ -31,7 +31,7 @@ function areCheckboxesChecked() {
 }
 function fetchYourData(selectedValue) {
     const stationSelect = document.querySelector("#city");
-    const temperatureCheckBox = document.getElementById("temperature");
+    const temperatureCheckBox = document.getElementById("HumidityMean");
 
     if (selectedValue === "選擇縣市") {
         alert("請選擇一個縣市");
@@ -41,6 +41,7 @@ function fetchYourData(selectedValue) {
         stationSelect.style.color = "black";
     }
 
+    // Proceed only if temperatureCheckBox is checked
     if (temperatureCheckBox && temperatureCheckBox.checked) {
         return fetch(`/getSingleMonthData/${selectedValue}`)
             .then(response => {
@@ -63,7 +64,7 @@ function processChartData(data) {
     };
 }
 function renderChart(processedData) {
-    let myChart = echarts.init(document.getElementById('airTemperatureResultSection'));
+    let myChart = echarts.init(document.getElementById('relativeHumidityResultSection'));
 
     let option = {
         tooltip: {
