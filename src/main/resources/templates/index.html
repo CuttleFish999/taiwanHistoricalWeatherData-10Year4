@@ -23,7 +23,16 @@
         .header {
             margin-bottom: 30px;
         }
-
+        .headerInput{
+            text-align: center;
+        }
+        .col-md-4{
+            display: flex;
+            flex-direction: column;
+        }
+        #city-label{
+            padding-right: 1em
+        }
         /*information-div*/
         #information-div ul {
             list-style: none;
@@ -123,6 +132,8 @@
             background: #000;
             display: block;
         }
+
+
     </style>
 </head>
 <body>
@@ -135,9 +146,9 @@
         <div class="row g-3">
 
             <div class="col-md-4">
-                <label for="city" class="form-label">城市</label>
+                <label id="city-label" for="city" class="form-label headerInput">城市</label>
 
-                <select id="city" class="form-select">
+                <select id="city" class="form-select headerInput">
                     <option selected>選擇縣市</option>
                     <th:block th:each="station : ${weatherData}">
                         <th:block th:if="${station.StationName != null && station.StationName != ''}">
@@ -149,12 +160,12 @@
 
 
             <div class="col-md-4">
-                <label for="startDate" class="form-label">開始日期</label>
-                <input type="" class="form-control" id="startDate" th:value="${StationStartYear}">
+                <label for="startDate" class="form-label headerInput">開始日期</label>
+                <input type="" class="form-control headerInput" id="startDate" th:value="${StationStartYear}">
             </div>
             <div class="col-md-4">
-                <label for="endDate" class="form-label">結束日期</label>
-                <input type="" class="form-control" id="endDate">
+                <label for="endDate" class="form-label headerInput">結束日期</label>
+                <input type="" class="form-control headerInput" id="endDate">
             </div>
             <div class="col-12" id="weatherDataTypes-div">
                 <label class="form-label">氣象數據類型</label>
