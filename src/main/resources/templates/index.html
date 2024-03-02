@@ -11,6 +11,10 @@
             margin: 0;
             padding: 0;
         }
+        html,body{
+            width: 100%;
+
+        }
 
         body {
             padding-top: 20px;
@@ -23,16 +27,32 @@
         .header {
             margin-bottom: 30px;
         }
-        .headerInput{
+
+        .headerInput {
             text-align: center;
+            font-size: 1.5em !important;
+            border-radius: 25px;
         }
-        .col-md-4{
+
+        /*yearlyStatistics-div*/
+
+        #yearlyStatistics-div{
+            display: flex;
+            flex-wrap: nowrap;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        .col-md-4 {
             display: flex;
             flex-direction: column;
+            margin: 0 .3em;
         }
-        #city-label{
+
+        #city-label {
             padding-right: 1em
         }
+
         /*information-div*/
         #information-div ul {
             list-style: none;
@@ -98,8 +118,9 @@
             right: 2em;
             align-items: flex-end;
         }
-        #current-div{
-            background: rgba(0,0,0,.5);
+
+        #current-div {
+            background: rgba(0, 0, 0, .5);
             border-radius: 15px;
             padding: 0.5em;
             margin: 1em;
@@ -109,11 +130,12 @@
             left: 2.5em;
         }
 
-        .current-span{
+        .current-span {
             color: #fff;
             display: block;
             text-align: center;
         }
+
         .returnIcon,
         .nav-icon {
             width: 50px;
@@ -128,9 +150,12 @@
             padding-bottom: 1em;
             padding-left: 0.4em;
         }
+
         {
-            background: #000;
-            display: block;
+            background: #000
+        ;
+            display: block
+        ;
         }
 
 
@@ -144,9 +169,9 @@
     </div>
     <form id="searchForm">
         <div class="row g-3">
-
+            <div id="yearlyStatistics-div">
             <div class="col-md-4">
-                <label id="city-label" for="city" class="form-label headerInput">城市</label>
+                <label id="city-label" for="city" class="form-label headerInput">觀測站</label>
 
                 <select id="city" class="form-select headerInput">
                     <option selected>選擇縣市</option>
@@ -159,14 +184,20 @@
             </div>
 
 
-            <div class="col-md-4">
-                <label for="startDate" class="form-label headerInput">開始日期</label>
-                <input type="" class="form-control headerInput" id="startDate" th:value="${StationStartYear}">
+                <div class="col-md-4">
+                    <label for="startDate" class="form-label headerInput">開始統計年/西元</label>
+                    <input type="" class="form-control headerInput" id="startDate" th:value="${StationStartYear}">
+                </div>
+                <div class="col-md-4">
+                    <label for="endDate" class="form-label headerInput">結束統計年/西元</label>
+                    <input type="" class="form-control headerInput" id="endDate">
+                </div>
+                <div class="col-md-4">
+                    <label for="endDate" class="form-label headerInput">統計總年分/年</label>
+                    <input type="" class="form-control headerInput" id="TotalYear">
+                </div>
             </div>
-            <div class="col-md-4">
-                <label for="endDate" class="form-label headerInput">結束日期</label>
-                <input type="" class="form-control headerInput" id="endDate">
-            </div>
+
             <div class="col-12" id="weatherDataTypes-div">
                 <label class="form-label">氣象數據類型</label>
                 <button id="cancelBtn" onclick="toggleSelection(); return false;"
@@ -279,14 +310,14 @@
             <span class="current-span" id="">當前城市: </span>
             <span class="current-span" id="current-city"></span>
 
-<!--            <select id="city2" class="form-select">-->
-<!--                <option selected>選擇縣市</option>-->
-<!--                <th:block th:each="station : ${weatherData}">-->
-<!--                    <th:block th:if="${station.StationName != null && station.StationName != ''}">-->
-<!--                        <option th:value="${station.StationID}" th:text="${station.StationName}"></option>-->
-<!--                    </th:block>-->
-<!--                </th:block>-->
-<!--            </select>-->
+            <!--            <select id="city2" class="form-select">-->
+            <!--                <option selected>選擇縣市</option>-->
+            <!--                <th:block th:each="station : ${weatherData}">-->
+            <!--                    <th:block th:if="${station.StationName != null && station.StationName != ''}">-->
+            <!--                        <option th:value="${station.StationID}" th:text="${station.StationName}"></option>-->
+            <!--                    </th:block>-->
+            <!--                </th:block>-->
+            <!--            </select>-->
         </div>
 
         <!--        airTemperatureResultSection-->
@@ -316,7 +347,7 @@
     const currentSpan = document.getElementById("current-city");
     const query_btn = document.getElementById("query-btn");
 
-    const startDate = document.getElementById("startDate");
+    const TotalYear = document.getElementById("TotalYear");
 
     query_btn.addEventListener("click", function () {
 
@@ -338,10 +369,9 @@
                 document.getElementById('startDate').value = formattedStartYear;
 
                 document.getElementById('endDate').value = formattedEndYear;
+                TotalYear.value = formattedEndYear - formattedStartYear;
             }
         }).catch(error => console.error('Error:', error));
-
-
 
 
     });
