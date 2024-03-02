@@ -115,7 +115,6 @@
 <script th:src="@{/js/indexJS/relativeHumidity.js}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-
         const stationSelect = document.querySelector("#city");
         const query_btn = document.getElementById("query-btn");
 
@@ -129,25 +128,26 @@
                     return;
                 }
 
-                // 請求
                 fetchYourData(stationSelectVal).then(data => {
                     if (data) {
-
                         const temperatureCheckbox = document.getElementById("temperature");
                         const humidityCheckbox = document.getElementById("humidity");
+                        const temperatureChartContainer = document.getElementById('airTemperatureResultSection');
+                        const humidityChartContainer = document.getElementById('relativeHumidityResultSection');
 
                         if (temperatureCheckbox && temperatureCheckbox.checked) {
                             const temperatureData = processTemperatureData(data);
                             renderTemperatureChart(temperatureData);
+                        } else if (temperatureChartContainer) {
+                            temperatureChartContainer.innerHTML = '';
                         }
 
                         if (humidityCheckbox && humidityCheckbox.checked) {
                             const humidityData = processHumidityData(data);
                             renderHumidityChart(humidityData);
+                        } else if (humidityChartContainer) {
+                            humidityChartContainer.innerHTML = '';
                         }
-
-
-
                     }
                 }).catch(error => console.error('Error:', error));
             });
@@ -157,12 +157,10 @@
 
     });
 
-    // 檢查是否至少有一個複選框被勾選
     function areCheckboxesChecked() {
         const checkboxes = document.querySelectorAll('.form-check-input');
         return Array.from(checkboxes).some(checkbox => checkbox.checked);
     }
-
 
     function fetchYourData(selectedValue) {
         const stationSelect = document.querySelector("#city");
@@ -174,10 +172,9 @@
             stationSelect.style.border = "1px solid red";
             return Promise.reject(new Error("請選擇一個縣市"));
         } else {
-            stationSelect.style.border = "1px solid black";
+            stationSelect.style.border = "none";
         }
 
-        // URL
         let url = `/getSingleMonthData/${selectedValue}`;
         let queryParams = [];
         if (temperatureCheckbox.checked) {
@@ -186,9 +183,8 @@
         if (humidityCheckbox.checked) {
             queryParams.push("type=humidity");
         }
-        url += (queryParams.length > 0 ? '?' + queryParams.join('&') : '');
+        url += queryParams.length > 0 ? '?' + queryParams.join('&') : '';
 
-        // API
         return fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -197,8 +193,8 @@
                 return response.json();
             });
     }
-
 </script>
+
 
 </body>
 </html>
