@@ -21,11 +21,13 @@
         #query-btn {
             margin-bottom: 2em;
         }
-        .form-label{
+
+        .form-label {
             font-weight: 1000;
             font-size: 1.1em;
         }
-        #cancelBtn{
+
+        #cancelBtn {
             background-color: rgb(0, 123, 255);
             color: rgb(255, 255, 255);
             border: none;
@@ -35,9 +37,11 @@
             margin-bottom: 1em;
             font-weight: 1000;
         }
-        #cancelBtn:hover{
+
+        #cancelBtn:hover {
             background: rgb(173, 216, 230)
         }
+
         .result-chart {
             margin-top: 20px;
         }
@@ -49,6 +53,31 @@
         #weatherDataTypes-div {
             display: flex;
             justify-content: space-between;
+        }
+
+        /*returnIcon*/
+
+        #nav-div {
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            bottom: 2em;
+            right: 2em;
+        }
+
+        .returnIcon,
+        .nav-icon {
+            width: 50px;
+
+        }
+
+        .returnIcon {
+            transform: rotate(90deg);
+        }
+
+        .nav-icon {
+            padding-bottom: 1em;
+            padding-left: 0.4em;
         }
     </style>
 </head>
@@ -68,7 +97,6 @@
 
                     <th:block th:each="station : ${weatherData}">
                         <th:block th:if="${station.StationName != null && station.StationName != ''}">
-                            <!-- Note: Removed the id attribute -->
                             <option th:value="${station.StationID}" th:text="${station.StationName}"></option>
                         </th:block>
                     </th:block>
@@ -139,8 +167,6 @@
         </div>
 
 
-
-
         <div class="text-center">
             <button type="button" id="query-btn" onclick="" class="btn btn-primary mt-3">查詢</button>
         </div>
@@ -152,10 +178,41 @@
         <div id="precipitationResultSection" style="width: 100%;height:400px;"></div>
         <div id="windSpeedResultSection" style="width: 100%;height:400px;"></div>
         <div id="airPressureResultSection" style="width: 100%;height:400px;"></div>
-
         <div id="sunshineDurationResultSection" style="width: 100%;height:400px;"></div>
 
     </form>
+
+    <div id="nav-div">
+        <a href="#airTemperatureResultSection">
+            <img class="nav-icon" th:src="@{/icon/index/thermometer.png}" alt="">
+        </a>
+        <a href="#relativeHumidityResultSection">
+            <img class="nav-icon" th:src="@{/icon/index/humidity.png}" alt="">
+        </a>
+        <a href="#precipitationResultSection">
+            <img class="nav-icon" th:src="@{/icon/index/rainfall.png}" alt="">
+        </a>
+        <a href="#windSpeedResultSection">
+            <img class="nav-icon" th:src="@{/icon/index/storm.png}" alt="">
+        </a>
+        <a href="#airPressureResultSection">
+            <img class="nav-icon" th:src="@{/icon/index/cloudy.png}" alt="">
+        </a>
+        <a href="#sunshineDurationResultSection">
+            <img class="nav-icon" th:src="@{/icon/index/uv-index.png}" alt="">
+        </a>
+        <a href="#">
+            <img class="returnIcon" th:src="@{/icon/index/previous.png}" alt="">
+        </a>
+
+
+        <!--        airTemperatureResultSection-->
+        <!--        relativeHumidityResultSection-->
+        <!--        precipitationResultSection-->
+        <!--        windSpeedResultSection-->
+        <!--        airPressureResultSection-->
+        <!--        sunshineDurationResultSection-->
+    </div>
 </div>
 
 
