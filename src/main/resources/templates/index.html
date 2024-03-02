@@ -117,7 +117,7 @@
             </div>
         </div>
 
-        <button onclick="cancelSelection(); return false;" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">取消選擇</button>
+        <button id="cancelBtn" onclick="toggleSelection(); return false;" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">取消選擇</button>
 
 
 
@@ -152,6 +152,24 @@
 <script th:src="@{/js/indexJS/sunshineDuration.js}"></script>
 
 <script>
+    function toggleSelection() {
+        let checkboxes = document.querySelectorAll('.form-check-input');
+        let cancelBtn = document.getElementById("cancelBtn");
+
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = !checkbox.checked;
+        });
+
+        if (areCheckboxesChecked()) {
+            cancelBtn.textContent = "取消選擇";
+            cancelBtn.style.backgroundColor = "#007bff";
+        } else {
+            cancelBtn.textContent = "全選";
+            cancelBtn.style.backgroundColor = "#28a745";
+            // location.reload(true);
+        }
+    }
+
     function areCheckboxesChecked() {
         let checkboxes = document.querySelectorAll('.form-check-input');
         for (let i = 0; i < checkboxes.length; i++) {
@@ -160,12 +178,6 @@
             }
         }
         return false;
-    }
-    function cancelSelection() {
-        let checkboxes = document.querySelectorAll('.form-check-input');
-        checkboxes.forEach(function(checkbox) {
-            checkbox.checked = false;
-        });
     }
 
     document.addEventListener('DOMContentLoaded', function () {
