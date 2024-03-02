@@ -102,6 +102,8 @@
         </div>
         <div id="airTemperatureResultSection" style="width: 100%;height:400px;"></div>
         <div id="relativeHumidityResultSection" style="width: 100%;height:400px;"></div>
+        <div id="precipitationResultSection" style="width: 100%;height:400px;"></div>
+        <div id="windSpeedResultSection" style="width: 100%;height:400px;"></div>
 
     </form>
 </div>
@@ -113,9 +115,10 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 <script th:src="@{/js/indexJS/airTemperature.js}"></script>
 <script th:src="@{/js/indexJS/relativeHumidity.js}"></script>
+<script th:src="@{/js/indexJS/precipitation.js}"></script>
+<script th:src="@{/js/indexJS/windSpeed.js}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-
         const stationSelect = document.querySelector("#city");
         const query_btn = document.getElementById("query-btn");
 
@@ -129,25 +132,44 @@
                     return;
                 }
 
-                // 請求
                 fetchYourData(stationSelectVal).then(data => {
                     if (data) {
-
                         const temperatureCheckbox = document.getElementById("temperature");
                         const humidityCheckbox = document.getElementById("humidity");
+                        const rainfallCheckbox = document.getElementById("rainfall");
+                        const windSpeedCheckbox = document.getElementById("windSpeed");
+                        const temperatureChartContainer = document.getElementById('airTemperatureResultSection');
+                        const humidityChartContainer = document.getElementById('relativeHumidityResultSection');
+                        const rainfallResultSection = document.getElementById('precipitationResultSection');
+                        const windSpeedResultSection = document.getElementById('windSpeedResultSection');
 
                         if (temperatureCheckbox && temperatureCheckbox.checked) {
                             const temperatureData = processTemperatureData(data);
                             renderTemperatureChart(temperatureData);
+                        } else if (temperatureChartContainer) {
+                            temperatureChartContainer.innerHTML = '';
                         }
 
                         if (humidityCheckbox && humidityCheckbox.checked) {
                             const humidityData = processHumidityData(data);
                             renderHumidityChart(humidityData);
+                        } else if (humidityChartContainer) {
+                            humidityChartContainer.innerHTML = '';
                         }
 
+                        if (rainfallCheckbox && rainfallCheckbox.checked) {
+                            const precipitationData = processPrecipitationData(data);
+                            renderPrecipitationChart(precipitationData);
+                        } else if (rainfallResultSection) {
+                            rainfallResultSection.innerHTML = '';
+                        }
 
-
+                        if (windSpeedCheckbox && windSpeedCheckbox.checked) {
+                            const windSpeedData = processWindSpeedData(data);
+                            renderWindSpeedChart(windSpeedData);
+                        } else if (windSpeedResultSection) {
+                            windSpeedResultSection.innerHTML = '';
+                        }
                     }
                 }).catch(error => console.error('Error:', error));
             });
@@ -157,17 +179,17 @@
 
     });
 
-    // 檢查是否至少有一個複選框被勾選
     function areCheckboxesChecked() {
         const checkboxes = document.querySelectorAll('.form-check-input');
         return Array.from(checkboxes).some(checkbox => checkbox.checked);
     }
 
-
     function fetchYourData(selectedValue) {
         const stationSelect = document.querySelector("#city");
         const temperatureCheckbox = document.getElementById("temperature");
         const humidityCheckbox = document.getElementById("humidity");
+        const rainfallCheckbox = document.getElementById("rainfall");
+        const windSpeedCheckbox = document.getElementById("windSpeed");
 
         if (selectedValue === "選擇縣市") {
             alert("請選擇一個縣市");
@@ -177,7 +199,6 @@
             stationSelect.style.border = "1px solid black";
         }
 
-        // URL
         let url = `/getSingleMonthData/${selectedValue}`;
         let queryParams = [];
         if (temperatureCheckbox.checked) {
@@ -186,9 +207,14 @@
         if (humidityCheckbox.checked) {
             queryParams.push("type=humidity");
         }
-        url += (queryParams.length > 0 ? '?' + queryParams.join('&') : '');
+        if (rainfallCheckbox.checked) {
+            queryParams.push("type=rainfall");
+        }
+        if (windSpeedCheckbox.checked) {
+            queryParams.push("type=windSpeed");
+        }
+        url += queryParams.length > 0 ? '?' + queryParams.join('&') : '';
 
-        // API
         return fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -199,6 +225,7 @@
     }
 
 </script>
+
 
 </body>
 </html>

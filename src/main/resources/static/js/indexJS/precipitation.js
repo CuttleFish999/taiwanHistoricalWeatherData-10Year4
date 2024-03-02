@@ -1,18 +1,18 @@
-function processTemperatureData(data) {
+function processPrecipitationData(data) {
     const labels = data.map(item => `${item.Month}月`);
-    const temperatureValues = data.map(item => item.TemperatureMean);
+    const precipitationValues = data.map(item => item.Precipitation);
     return {
         labels: labels,
-        temperatureValues: temperatureValues
+        precipitationValues: precipitationValues
     };
 }
 
-function renderTemperatureChart(processedData) {
-    let myChart = echarts.init(document.getElementById('airTemperatureResultSection'));
+function renderPrecipitationChart(processedData) {
+    let myChart = echarts.init(document.getElementById('precipitationResultSection'));
 
     let option = {
         title: {
-            text: '溫度 (°C)',
+            text: '雨量 (mm)',
             left: 'center'
         },
 
@@ -27,21 +27,20 @@ function renderTemperatureChart(processedData) {
             type: 'value'
         },
         series: [{
-            data: processedData.temperatureValues,
+            data: processedData.precipitationValues,
             type: 'line',
             smooth: true,
             areaStyle: {
-                color: 'red'
+                color: 'blue'
             },
             itemStyle: {
-                color: 'red'
+                color: 'blue'
             },
             lineStyle: {
-                color: 'red'
+                color: 'blue'
             }
         }]
     };
 
     myChart.setOption(option);
 }
-

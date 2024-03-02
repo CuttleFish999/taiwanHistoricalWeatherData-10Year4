@@ -1,21 +1,20 @@
-function processTemperatureData(data) {
+function processWindSpeedData(data) {
     const labels = data.map(item => `${item.Month}月`);
-    const temperatureValues = data.map(item => item.TemperatureMean);
+    const windSpeedValues = data.map(item => item.WindSpeed);
     return {
         labels: labels,
-        temperatureValues: temperatureValues
+        windSpeedValues: windSpeedValues
     };
 }
 
-function renderTemperatureChart(processedData) {
-    let myChart = echarts.init(document.getElementById('airTemperatureResultSection'));
+function renderWindSpeedChart(processedData) {
+    let myChart = echarts.init(document.getElementById('windSpeedResultSection'));
 
     let option = {
         title: {
-            text: '溫度 (°C)',
+            text: '風速 (m/s)',
             left: 'center'
         },
-
         tooltip: {
             trigger: 'axis'
         },
@@ -27,21 +26,20 @@ function renderTemperatureChart(processedData) {
             type: 'value'
         },
         series: [{
-            data: processedData.temperatureValues,
+            data: processedData.windSpeedValues,
             type: 'line',
             smooth: true,
             areaStyle: {
-                color: 'red'
+                color: 'blue'
             },
             itemStyle: {
-                color: 'red'
+                color: 'blue'
             },
             lineStyle: {
-                color: 'red'
+                color: 'blue'
             }
         }]
     };
 
     myChart.setOption(option);
 }
-

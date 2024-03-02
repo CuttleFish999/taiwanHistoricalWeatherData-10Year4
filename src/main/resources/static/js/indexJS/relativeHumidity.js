@@ -1,5 +1,4 @@
 function processHumidityData(data) {
-    // Process humidity data
     const labels = data.map(item => `${item.Month}月`);
     const humidityValues = data.map(item => item.HumidityMean);
     return {
@@ -12,6 +11,10 @@ function renderHumidityChart(processedData) {
     let myChart = echarts.init(document.getElementById('relativeHumidityResultSection'));
 
     let option = {
+        title: {
+            text: '濕度 (%)',
+            left: 'center'
+        },
         tooltip: {
             trigger: 'axis'
         },
