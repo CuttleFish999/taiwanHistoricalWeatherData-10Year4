@@ -30,13 +30,13 @@ function renderAirPressureChart(processedData) {
             type: 'line',
             smooth: true,
             areaStyle: {
-                color: 'green'
+                color: 'purple'
             },
             itemStyle: {
-                color: 'green'
+                color: 'purple'
             },
             lineStyle: {
-                color: 'green'
+                color: 'purple'
             }
         }]
     };

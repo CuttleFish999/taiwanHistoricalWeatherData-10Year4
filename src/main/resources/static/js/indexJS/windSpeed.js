@@ -30,13 +30,13 @@ function renderWindSpeedChart(processedData) {
             type: 'line',
             smooth: true,
             areaStyle: {
-                color: 'blue'
+                color: 'darkgreen'
             },
             itemStyle: {
-                color: 'blue'
+                color: 'darkgreen'
             },
             lineStyle: {
-                color: 'blue'
+                color: 'darkgreen'
             }
         }]
     };
