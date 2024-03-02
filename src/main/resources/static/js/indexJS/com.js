@@ -2,7 +2,7 @@ function toggleSelection() {
     let checkboxes = document.querySelectorAll('.form-check-input');
     let cancelBtn = document.getElementById("cancelBtn");
 
-    checkboxes.forEach(function(checkbox) {
+    checkboxes.forEach(function (checkbox) {
         checkbox.checked = !checkbox.checked;
     });
 
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function cancelSelection() {
     let checkboxes = document.querySelectorAll('.form-check-input');
-    checkboxes.forEach(function(checkbox) {
+    checkboxes.forEach(function (checkbox) {
         checkbox.checked = !checkbox.checked;
     });
 }
@@ -113,7 +113,7 @@ function cancelSelection() {
 
 function selectAllCheckboxes() {
     let checkboxes = document.querySelectorAll('.form-check-input');
-    checkboxes.forEach(function(checkbox) {
+    checkboxes.forEach(function (checkbox) {
         checkbox.checked = true;
     });
 }

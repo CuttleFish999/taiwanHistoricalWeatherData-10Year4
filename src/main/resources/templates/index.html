@@ -150,11 +150,11 @@
 
             <div class="col-md-4">
                 <label for="startDate" class="form-label">開始日期</label>
-                <input type="date" class="form-control" id="startDate" th:value="${StationStartYear}">
+                <input type="" class="form-control" id="startDate" th:value="${StationStartYear}">
             </div>
             <div class="col-md-4">
                 <label for="endDate" class="form-label">結束日期</label>
-                <input type="date" class="form-control" id="endDate">
+                <input type="" class="form-control" id="endDate">
             </div>
             <div class="col-12" id="weatherDataTypes-div">
                 <label class="form-label">氣象數據類型</label>
@@ -308,8 +308,31 @@
     const startDate = document.getElementById("startDate");
 
     query_btn.addEventListener("click", function () {
+
         currentSpan.innerText = `${citySelect.options[citySelect.selectedIndex].text}`;
-        startDate.text = ;
+
+        let stationSelectVal = citySelect.value;
+        if (!areCheckboxesChecked()) {
+            alert("請至少選擇一種氣象數據類型");
+            return;
+        }
+
+        fetchYourData(stationSelectVal).then(data => {
+            if (data) {
+                const stationStartYear = data[0].StationStartYear;
+                const stationEndYear = data[0].StationEndYear;
+                const formattedStartYear = stationStartYear.toString();
+                const formattedEndYear = stationEndYear.toString();
+
+                document.getElementById('startDate').value = formattedStartYear;
+
+                document.getElementById('endDate').value = formattedEndYear;
+            }
+        }).catch(error => console.error('Error:', error));
+
+
+
+
     });
 
 </script>
