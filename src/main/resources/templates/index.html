@@ -104,8 +104,9 @@
         <div id="relativeHumidityResultSection" style="width: 100%;height:400px;"></div>
         <div id="precipitationResultSection" style="width: 100%;height:400px;"></div>
         <div id="windSpeedResultSection" style="width: 100%;height:400px;"></div>
-
         <div id="airPressureResultSection" style="width: 100%;height:400px;"></div>
+
+        <div id="sunshineDurationResultSection" style="width: 100%;height:400px;"></div>
 
     </form>
 </div>
@@ -119,8 +120,9 @@
 <script th:src="@{/js/indexJS/relativeHumidity.js}"></script>
 <script th:src="@{/js/indexJS/precipitation.js}"></script>
 <script th:src="@{/js/indexJS/windSpeed.js}"></script>
-
 <script th:src="@{/js/indexJS/airPressure.js}"></script>
+
+<script th:src="@{/js/indexJS/sunshineDuration.js}"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -144,11 +146,13 @@
                         const rainfallCheckbox = document.getElementById("rainfall");
                         const windSpeedCheckbox = document.getElementById("windSpeed");
                         const airPressureCheckbox = document.getElementById("airPressure");
+                        const sunshineDurationCheckbox = document.getElementById("sunshine");
                         const temperatureChartContainer = document.getElementById('airTemperatureResultSection');
                         const humidityChartContainer = document.getElementById('relativeHumidityResultSection');
                         const rainfallResultSection = document.getElementById('precipitationResultSection');
                         const windSpeedResultSection = document.getElementById('windSpeedResultSection');
                         const airPressureResultSection = document.getElementById('airPressureResultSection');
+                        const sunshineDurationResultSection = document.getElementById('sunshineDurationResultSection');
 
                         if (temperatureCheckbox && temperatureCheckbox.checked) {
                             const temperatureData = processTemperatureData(data);
@@ -184,6 +188,13 @@
                         } else {
                             airPressureResultSection.innerHTML = '';
                         }
+
+                        if (sunshineDurationCheckbox && sunshineDurationCheckbox.checked) {
+                            const sunshineDurationData = processSunshineDurationData(data);
+                            renderSunshineDurationChart(sunshineDurationData);
+                        } else {
+                            sunshineDurationResultSection.innerHTML = '';
+                        }
                     }
                 }).catch(error => console.error('Error:', error));
             });
@@ -205,6 +216,7 @@
         const rainfallCheckbox = document.getElementById("rainfall");
         const windSpeedCheckbox = document.getElementById("windSpeed");
         const airPressureCheckbox = document.getElementById("airPressure");
+        const sunshineDurationCheckbox = document.getElementById("sunshine");
 
         if (selectedValue === "選擇縣市") {
             alert("請選擇一個縣市");
@@ -231,8 +243,10 @@
         if (airPressureCheckbox.checked) {
             queryParams.push("type=airPressure");
         }
+        if (sunshineDurationCheckbox.checked) {
+            queryParams.push("type=sunshine");
+        }
         url += queryParams.length > 0 ? '?' + queryParams.join('&') : '';
-
         return fetch(url)
             .then(response => {
                 if (!response.ok) {
