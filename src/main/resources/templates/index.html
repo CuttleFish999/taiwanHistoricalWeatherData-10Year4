@@ -103,6 +103,7 @@
         <div id="airTemperatureResultSection" style="width: 100%;height:400px;"></div>
         <div id="relativeHumidityResultSection" style="width: 100%;height:400px;"></div>
         <div id="precipitationResultSection" style="width: 100%;height:400px;"></div>
+        <div id="windSpeedResultSection" style="width: 100%;height:400px;"></div>
 
     </form>
 </div>
@@ -115,6 +116,7 @@
 <script th:src="@{/js/indexJS/airTemperature.js}"></script>
 <script th:src="@{/js/indexJS/relativeHumidity.js}"></script>
 <script th:src="@{/js/indexJS/precipitation.js}"></script>
+<script th:src="@{/js/indexJS/windSpeed.js}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const stationSelect = document.querySelector("#city");
@@ -135,9 +137,11 @@
                         const temperatureCheckbox = document.getElementById("temperature");
                         const humidityCheckbox = document.getElementById("humidity");
                         const rainfallCheckbox = document.getElementById("rainfall");
+                        const windSpeedCheckbox = document.getElementById("windSpeed");
                         const temperatureChartContainer = document.getElementById('airTemperatureResultSection');
                         const humidityChartContainer = document.getElementById('relativeHumidityResultSection');
                         const rainfallResultSection = document.getElementById('precipitationResultSection');
+                        const windSpeedResultSection = document.getElementById('windSpeedResultSection');
 
                         if (temperatureCheckbox && temperatureCheckbox.checked) {
                             const temperatureData = processTemperatureData(data);
@@ -159,6 +163,13 @@
                         } else if (rainfallResultSection) {
                             rainfallResultSection.innerHTML = '';
                         }
+
+                        if (windSpeedCheckbox && windSpeedCheckbox.checked) {
+                            const windSpeedData = processWindSpeedData(data);
+                            renderWindSpeedChart(windSpeedData);
+                        } else if (windSpeedResultSection) {
+                            windSpeedResultSection.innerHTML = '';
+                        }
                     }
                 }).catch(error => console.error('Error:', error));
             });
@@ -178,6 +189,7 @@
         const temperatureCheckbox = document.getElementById("temperature");
         const humidityCheckbox = document.getElementById("humidity");
         const rainfallCheckbox = document.getElementById("rainfall");
+        const windSpeedCheckbox = document.getElementById("windSpeed");
 
         if (selectedValue === "選擇縣市") {
             alert("請選擇一個縣市");
@@ -195,6 +207,12 @@
         if (humidityCheckbox.checked) {
             queryParams.push("type=humidity");
         }
+        if (rainfallCheckbox.checked) {
+            queryParams.push("type=rainfall");
+        }
+        if (windSpeedCheckbox.checked) {
+            queryParams.push("type=windSpeed");
+        }
         url += queryParams.length > 0 ? '?' + queryParams.join('&') : '';
 
         return fetch(url)
@@ -205,6 +223,7 @@
                 return response.json();
             });
     }
+
 </script>
 
 

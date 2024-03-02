@@ -1,5 +1,4 @@
 function processHumidityData(data) {
-    // Process humidity data
     const labels = data.map(item => `${item.Month}月`);
     const humidityValues = data.map(item => item.HumidityMean);
     return {
