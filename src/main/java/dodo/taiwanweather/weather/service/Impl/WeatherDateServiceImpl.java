@@ -68,6 +68,9 @@ public class WeatherDateServiceImpl implements WeatherDateService {
             requestBuilder.uri(URI.create("https://opendata.cwa.gov.tw/api/v1/rest/datastore/C-B0027-001?Authorization=CWA-2FD4BAFB-A6F7-4127-9D46-F2A699F51C10&limit=1&format=JSON&StationID=" + stationId));
         }
 
+
+//        &weatherElement=AirTemperature 天氣
+
         HttpRequest request = requestBuilder.build();
 
         List<Map<String, Object>> weatherData = new ArrayList<>();
