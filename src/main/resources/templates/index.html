@@ -136,23 +136,21 @@
 
             <div class="col-md-4">
                 <label for="city" class="form-label">城市</label>
+
                 <select id="city" class="form-select">
                     <option selected>選擇縣市</option>
-
                     <th:block th:each="station : ${weatherData}">
                         <th:block th:if="${station.StationName != null && station.StationName != ''}">
                             <option th:value="${station.StationID}" th:text="${station.StationName}"></option>
                         </th:block>
                     </th:block>
-
-
                 </select>
             </div>
 
 
             <div class="col-md-4">
                 <label for="startDate" class="form-label">開始日期</label>
-                <input type="date" class="form-control" id="startDate">
+                <input type="date" class="form-control" id="startDate" th:value="${StationStartYear}">
             </div>
             <div class="col-md-4">
                 <label for="endDate" class="form-label">結束日期</label>
@@ -269,6 +267,15 @@
         <div id="current-div">
             <span class="current-span" id="">當前城市: </span>
             <span class="current-span" id="current-city"></span>
+
+<!--            <select id="city2" class="form-select">-->
+<!--                <option selected>選擇縣市</option>-->
+<!--                <th:block th:each="station : ${weatherData}">-->
+<!--                    <th:block th:if="${station.StationName != null && station.StationName != ''}">-->
+<!--                        <option th:value="${station.StationID}" th:text="${station.StationName}"></option>-->
+<!--                    </th:block>-->
+<!--                </th:block>-->
+<!--            </select>-->
         </div>
 
         <!--        airTemperatureResultSection-->
@@ -298,8 +305,11 @@
     const currentSpan = document.getElementById("current-city");
     const query_btn = document.getElementById("query-btn");
 
+    const startDate = document.getElementById("startDate");
+
     query_btn.addEventListener("click", function () {
         currentSpan.innerText = `${citySelect.options[citySelect.selectedIndex].text}`;
+        startDate.text = ;
     });
 
 </script>

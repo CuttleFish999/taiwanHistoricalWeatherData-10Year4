@@ -99,8 +99,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }).catch(error => console.error('Error:', error));
         });
-    } else {
-        console.error("找不到元素：stationSelect 或 query-btn");
     }
 
 });
