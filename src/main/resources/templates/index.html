@@ -39,7 +39,8 @@
 
                     <th:block th:each="station : ${weatherData}">
                         <th:block th:if="${station.StationName != null && station.StationName != ''}">
-                            <option th:value="${station.StationName}" th:text="${station.StationName}"></option>
+                            <!-- Note: Removed the id attribute -->
+                            <option th:value="${station.StationID}" th:text="${station.StationName}"></option>
                         </th:block>
                     </th:block>
 
@@ -97,98 +98,19 @@
             </div>
         </div>
         <div class="text-center">
-            <button type="submit" class="btn btn-primary mt-3">查詢</button>
+            <button type="button" id="query-btn" onclick="" class="btn btn-primary mt-3">查詢</button>
         </div>
-        <div id="resultSection" class="result-chart">
-            <table class="table">
-                <thead>
-                <tr>
-<!--                    <th>開始年分</th>-->
-<!--                    <th>結束年分</th>-->
-                    <th>月份</th>
-                    <th>氣溫</th>
-                    <th>濕度</th>
-                    <th>累積雨量</th>
-                    <th>平均風速</th>
-                    <th>平均氣壓</th>
-                    <th>日照指數</th>
+        <div id="resultSection" style="width: 100%;height:400px;"></div>
 
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="data : ${weatherData}">
-<!--                    <td th:text="${data.StationStartYear + '年'}">開始年分</td>-->
-<!--                    <td th:text="${data.StationEndYear + '年'}">結束年分</td>-->
-                    <td th:text="${data.Month + ' 月'}">月份</td>
-                    <td th:text="${data.TemperatureMean + ' 度'}">平均氣溫</td>
-                    <td th:text="${data.HumidityMean + ' %'}">相對濕度</td>
-                    <td th:text="${data.Precipitation + ' mm'}">累積雨量</td>
-                    <td th:text="${data.WindSpeed + ' km/h'}">平均風速</td>
-                    <td th:text="${data.AirPressure + ' Pa'}">平均氣壓</td>
-                    <td th:text="${data.SunshineDuration + ' hr'}">日照指數</td>
-
-                </tr>
-                </tbody>
-            </table>
-        </div>
     </form>
 </div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchForm = document.getElementById('searchForm');
 
-        searchForm.addEventListener('submit', function (e) {
-            e.preventDefault(); // 阻止表單的默認提交行為
-
-            // 獲取表單輸入值
-            const city = document.getElementById('city').value;
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            const metrics = [];
-            document.querySelectorAll('input[type="checkbox"]:checked').forEach((checkbox) => {
-                metrics.push(checkbox.value);
-            });
-
-            // 構建查詢參數
-            const queryParams = new URLSearchParams({
-                city,
-                startDate,
-                endDate,
-                metrics: metrics.join(',')
-            }).toString();
-
-            // 發送數據查詢請求
-            fetch(`your-backend-api-url?${queryParams}`)
-                .then(response => response.json())
-                .then(data => {
-                    renderChart(data); // 使用查詢結果渲染圖表
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    });
-
-    function renderChart(data) {
-        const ctx = document.getElementById('resultSection').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line', // 這裡使用折線圖，可根據需求更改
-            data: {
-                labels: data.labels, // 假設labels是日期或時間
-                datasets: data.datasets // 假設datasets包含了各氣象數據的數據集
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-</script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script th:src="@{/js/index.js}"></script>
 
 </body>
 </html>
