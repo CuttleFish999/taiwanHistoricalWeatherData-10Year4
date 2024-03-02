@@ -102,6 +102,7 @@
         </div>
         <div id="airTemperatureResultSection" style="width: 100%;height:400px;"></div>
         <div id="relativeHumidityResultSection" style="width: 100%;height:400px;"></div>
+        <div id="precipitationResultSection" style="width: 100%;height:400px;"></div>
 
     </form>
 </div>
@@ -113,6 +114,7 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 <script th:src="@{/js/indexJS/airTemperature.js}"></script>
 <script th:src="@{/js/indexJS/relativeHumidity.js}"></script>
+<script th:src="@{/js/indexJS/precipitation.js}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const stationSelect = document.querySelector("#city");
@@ -132,8 +134,10 @@
                     if (data) {
                         const temperatureCheckbox = document.getElementById("temperature");
                         const humidityCheckbox = document.getElementById("humidity");
+                        const rainfallCheckbox = document.getElementById("rainfall");
                         const temperatureChartContainer = document.getElementById('airTemperatureResultSection');
                         const humidityChartContainer = document.getElementById('relativeHumidityResultSection');
+                        const rainfallResultSection = document.getElementById('precipitationResultSection');
 
                         if (temperatureCheckbox && temperatureCheckbox.checked) {
                             const temperatureData = processTemperatureData(data);
@@ -147,6 +151,13 @@
                             renderHumidityChart(humidityData);
                         } else if (humidityChartContainer) {
                             humidityChartContainer.innerHTML = '';
+                        }
+
+                        if (rainfallCheckbox && rainfallCheckbox.checked) {
+                            const precipitationData = processPrecipitationData(data);
+                            renderPrecipitationChart(precipitationData);
+                        } else if (rainfallResultSection) {
+                            rainfallResultSection.innerHTML = '';
                         }
                     }
                 }).catch(error => console.error('Error:', error));
@@ -166,13 +177,14 @@
         const stationSelect = document.querySelector("#city");
         const temperatureCheckbox = document.getElementById("temperature");
         const humidityCheckbox = document.getElementById("humidity");
+        const rainfallCheckbox = document.getElementById("rainfall");
 
         if (selectedValue === "選擇縣市") {
             alert("請選擇一個縣市");
             stationSelect.style.border = "1px solid red";
             return Promise.reject(new Error("請選擇一個縣市"));
         } else {
-            stationSelect.style.border = "none";
+            stationSelect.style.border = "1px solid black";
         }
 
         let url = `/getSingleMonthData/${selectedValue}`;
