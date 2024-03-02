@@ -25,6 +25,15 @@
         .result-chart {
             margin-top: 20px;
         }
+
+        .icon{
+            width: 25px;
+        }
+
+        #weatherDataTypes-div{
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
@@ -61,40 +70,46 @@
                 <label for="endDate" class="form-label">結束日期</label>
                 <input type="date" class="form-control" id="endDate">
             </div>
-            <div class="col-12">
+            <div class="col-12" id="weatherDataTypes-div">
                 <label class="form-label">氣象數據類型</label>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="temperature" id="temperature" checked>
+                    <img class="icon" th:src="@{/icon/index/thermometer.png}">
                     <label class="form-check-label" for="temperature">
                         氣溫
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="humidity" id="humidity">
+                    <img class="icon" th:src="@{/icon/index/humidity.png}">
                     <label class="form-check-label" for="humidity">
                         濕度
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="rainfall" id="rainfall">
+                    <img class="icon" th:src="@{/icon/index/rainfall.png}">
                     <label class="form-check-label" for="rainfall">
                         雨量
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="windSpeed" id="windSpeed">
+                    <img class="icon" th:src="@{/icon/index/storm.png}">
                     <label class="form-check-label" for="windSpeed">
                         風速
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="pressure" id="airPressure">
+                    <img class="icon" th:src="@{/icon/index/cloudy.png}">
                     <label class="form-check-label" for="airPressure">
                         氣壓
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="sunshine" id="sunshine">
+                    <img class="icon" th:src="@{/icon/index/uv-index.png}">
                     <label class="form-check-label" for="sunshine">
                         日照指數
                     </label>
