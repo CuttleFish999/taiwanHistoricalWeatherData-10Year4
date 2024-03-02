@@ -12,6 +12,10 @@ function renderHumidityChart(processedData) {
     let myChart = echarts.init(document.getElementById('relativeHumidityResultSection'));
 
     let option = {
+        title: {
+            text: '濕度 (%)',
+            left: 'center'
+        },
         tooltip: {
             trigger: 'axis'
         },

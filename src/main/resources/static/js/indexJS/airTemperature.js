@@ -12,6 +12,11 @@ function renderTemperatureChart(processedData) {
     let myChart = echarts.init(document.getElementById('airTemperatureResultSection'));
 
     let option = {
+        title: {
+            text: '溫度 (°C)',
+            left: 'center'
+        },
+
         tooltip: {
             trigger: 'axis'
         },
@@ -26,9 +31,18 @@ function renderTemperatureChart(processedData) {
             data: processedData.temperatureValues,
             type: 'line',
             smooth: true,
-            areaStyle: {}
+            areaStyle: {
+                color: 'red'
+            },
+            itemStyle: {
+                color: 'red'
+            },
+            lineStyle: {
+                color: 'red'
+            }
         }]
     };
 
     myChart.setOption(option);
 }
+
