@@ -5,7 +5,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (query_btn && stationSelect) {
         query_btn.addEventListener("click", function (e) {
+            e.preventDefault();
+
             let stationSelectVal = stationSelect.value;
+            if (!areCheckboxesChecked()) {
+                alert("請至少選擇一種氣象數據類型");
+                return;
+            }
+
             fetchYourData(stationSelectVal).then(data => {
                 if (data) {
                     const processedData = processChartData(data);
@@ -18,7 +25,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 });
-
+function areCheckboxesChecked() {
+    const checkboxes = document.querySelectorAll('.form-check-input');
+    return Array.from(checkboxes).some(checkbox => checkbox.checked);
+}
 function fetchYourData(selectedValue) {
     const stationSelect = document.querySelector("#city");
     const temperatureCheckBox = document.getElementById("temperature");
