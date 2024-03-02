@@ -1,18 +1,18 @@
-function processWindSpeedData(data) {
+function processSunshineDurationData(data) {
     const labels = data.map(item => `${item.Month}月`);
-    const windSpeedValues = data.map(item => item.WindSpeed);
+    const sunshineDurationValues = data.map(item => item.SunshineDuration);
     return {
         labels: labels,
-        windSpeedValues: windSpeedValues
+        sunshineDurationValues: sunshineDurationValues
     };
 }
 
-function renderWindSpeedChart(processedData) {
-    let myChart = echarts.init(document.getElementById('windSpeedResultSection'));
+function renderSunshineDurationChart(processedData) {
+    let myChart = echarts.init(document.getElementById('sunshineDurationResultSection'));
 
     let option = {
         title: {
-            text: '風速 (m/s)',
+            text: '日照時數 (小時)',
             left: 'center'
         },
         tooltip: {
@@ -26,17 +26,17 @@ function renderWindSpeedChart(processedData) {
             type: 'value'
         },
         series: [{
-            data: processedData.windSpeedValues,
+            data: processedData.sunshineDurationValues,
             type: 'line',
             smooth: true,
             areaStyle: {
-                color: 'darkgreen'
+                color: 'orange'
             },
             itemStyle: {
-                color: 'darkgreen'
+                color: 'orange'
             },
             lineStyle: {
-                color: 'darkgreen'
+                color: 'orange'
             }
         }]
     };

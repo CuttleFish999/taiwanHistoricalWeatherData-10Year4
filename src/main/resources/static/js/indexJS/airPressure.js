@@ -1,18 +1,18 @@
-function processWindSpeedData(data) {
+function processAirPressureData(data) {
     const labels = data.map(item => `${item.Month}月`);
-    const windSpeedValues = data.map(item => item.WindSpeed);
+    const airPressureValues = data.map(item => item.AirPressure);
     return {
         labels: labels,
-        windSpeedValues: windSpeedValues
+        airPressureValues: airPressureValues
     };
 }
 
-function renderWindSpeedChart(processedData) {
-    let myChart = echarts.init(document.getElementById('windSpeedResultSection'));
+function renderAirPressureChart(processedData) {
+    let myChart = echarts.init(document.getElementById('airPressureResultSection'));
 
     let option = {
         title: {
-            text: '風速 (m/s)',
+            text: '氣壓 (hPa)',
             left: 'center'
         },
         tooltip: {
@@ -26,17 +26,17 @@ function renderWindSpeedChart(processedData) {
             type: 'value'
         },
         series: [{
-            data: processedData.windSpeedValues,
+            data: processedData.airPressureValues,
             type: 'line',
             smooth: true,
             areaStyle: {
-                color: 'darkgreen'
+                color: 'purple'
             },
             itemStyle: {
-                color: 'darkgreen'
+                color: 'purple'
             },
             lineStyle: {
-                color: 'darkgreen'
+                color: 'purple'
             }
         }]
     };

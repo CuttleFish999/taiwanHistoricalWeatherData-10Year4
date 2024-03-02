@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,8 +18,21 @@
             margin-bottom: 30px;
         }
 
+        #query-btn{
+            margin-bottom: 2em;
+        }
+
         .result-chart {
             margin-top: 20px;
+        }
+
+        .icon{
+            width: 25px;
+        }
+
+        #weatherDataTypes-div{
+            display: flex;
+            justify-content: space-between;
         }
     </style>
 </head>
@@ -57,53 +70,70 @@
                 <label for="endDate" class="form-label">結束日期</label>
                 <input type="date" class="form-control" id="endDate">
             </div>
-            <div class="col-12">
+            <div class="col-12" id="weatherDataTypes-div">
                 <label class="form-label">氣象數據類型</label>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="temperature" id="temperature" checked>
+                    <input class="form-check-input" type="checkbox" value="temperature" id="temperature">
+                    <img class="icon" th:src="@{/icon/index/thermometer.png}">
                     <label class="form-check-label" for="temperature">
                         氣溫
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="humidity" id="humidity">
+                    <img class="icon" th:src="@{/icon/index/humidity.png}">
                     <label class="form-check-label" for="humidity">
                         濕度
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="rainfall" id="rainfall">
+                    <img class="icon" th:src="@{/icon/index/rainfall.png}">
                     <label class="form-check-label" for="rainfall">
                         雨量
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="windSpeed" id="windSpeed">
+                    <img class="icon" th:src="@{/icon/index/storm.png}">
                     <label class="form-check-label" for="windSpeed">
                         風速
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="pressure" id="pressure">
-                    <label class="form-check-label" for="pressure">
+                    <input class="form-check-input" type="checkbox" value="pressure" id="airPressure">
+                    <img class="icon" th:src="@{/icon/index/cloudy.png}">
+                    <label class="form-check-label" for="airPressure">
                         氣壓
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="sunshine" id="sunshine">
+                    <img class="icon" th:src="@{/icon/index/uv-index.png}">
                     <label class="form-check-label" for="sunshine">
                         日照指數
                     </label>
                 </div>
             </div>
         </div>
+
+        <button id="cancelBtn" onclick="toggleSelection(); return false;" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">取消選擇</button>
+
+
+
         <div class="text-center">
             <button type="button" id="query-btn" onclick="" class="btn btn-primary mt-3">查詢</button>
         </div>
+
+        <hr>
+
         <div id="airTemperatureResultSection" style="width: 100%;height:400px;"></div>
         <div id="relativeHumidityResultSection" style="width: 100%;height:400px;"></div>
         <div id="precipitationResultSection" style="width: 100%;height:400px;"></div>
         <div id="windSpeedResultSection" style="width: 100%;height:400px;"></div>
+        <div id="airPressureResultSection" style="width: 100%;height:400px;"></div>
+
+        <div id="sunshineDurationResultSection" style="width: 100%;height:400px;"></div>
 
     </form>
 </div>
@@ -117,7 +147,39 @@
 <script th:src="@{/js/indexJS/relativeHumidity.js}"></script>
 <script th:src="@{/js/indexJS/precipitation.js}"></script>
 <script th:src="@{/js/indexJS/windSpeed.js}"></script>
+<script th:src="@{/js/indexJS/airPressure.js}"></script>
+
+<script th:src="@{/js/indexJS/sunshineDuration.js}"></script>
+
 <script>
+    function toggleSelection() {
+        let checkboxes = document.querySelectorAll('.form-check-input');
+        let cancelBtn = document.getElementById("cancelBtn");
+
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = !checkbox.checked;
+        });
+
+        if (areCheckboxesChecked()) {
+            cancelBtn.textContent = "取消選擇";
+            cancelBtn.style.backgroundColor = "#007bff";
+        } else {
+            cancelBtn.textContent = "全選";
+            cancelBtn.style.backgroundColor = "#28a745";
+            // location.reload(true);
+        }
+    }
+
+    function areCheckboxesChecked() {
+        let checkboxes = document.querySelectorAll('.form-check-input');
+        for (let i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         const stationSelect = document.querySelector("#city");
         const query_btn = document.getElementById("query-btn");
@@ -138,37 +200,55 @@
                         const humidityCheckbox = document.getElementById("humidity");
                         const rainfallCheckbox = document.getElementById("rainfall");
                         const windSpeedCheckbox = document.getElementById("windSpeed");
+                        const airPressureCheckbox = document.getElementById("airPressure");
+                        const sunshineDurationCheckbox = document.getElementById("sunshine");
                         const temperatureChartContainer = document.getElementById('airTemperatureResultSection');
                         const humidityChartContainer = document.getElementById('relativeHumidityResultSection');
                         const rainfallResultSection = document.getElementById('precipitationResultSection');
                         const windSpeedResultSection = document.getElementById('windSpeedResultSection');
+                        const airPressureResultSection = document.getElementById('airPressureResultSection');
+                        const sunshineDurationResultSection = document.getElementById('sunshineDurationResultSection');
 
                         if (temperatureCheckbox && temperatureCheckbox.checked) {
                             const temperatureData = processTemperatureData(data);
                             renderTemperatureChart(temperatureData);
-                        } else if (temperatureChartContainer) {
+                        } else {
                             temperatureChartContainer.innerHTML = '';
                         }
 
                         if (humidityCheckbox && humidityCheckbox.checked) {
                             const humidityData = processHumidityData(data);
                             renderHumidityChart(humidityData);
-                        } else if (humidityChartContainer) {
+                        } else {
                             humidityChartContainer.innerHTML = '';
                         }
 
                         if (rainfallCheckbox && rainfallCheckbox.checked) {
                             const precipitationData = processPrecipitationData(data);
                             renderPrecipitationChart(precipitationData);
-                        } else if (rainfallResultSection) {
+                        } else {
                             rainfallResultSection.innerHTML = '';
                         }
 
                         if (windSpeedCheckbox && windSpeedCheckbox.checked) {
                             const windSpeedData = processWindSpeedData(data);
                             renderWindSpeedChart(windSpeedData);
-                        } else if (windSpeedResultSection) {
+                        } else {
                             windSpeedResultSection.innerHTML = '';
+                        }
+
+                        if (airPressureCheckbox && airPressureCheckbox.checked) {
+                            const airPressureData = processAirPressureData(data);
+                            renderAirPressureChart(airPressureData);
+                        } else {
+                            airPressureResultSection.innerHTML = '';
+                        }
+
+                        if (sunshineDurationCheckbox && sunshineDurationCheckbox.checked) {
+                            const sunshineDurationData = processSunshineDurationData(data);
+                            renderSunshineDurationChart(sunshineDurationData);
+                        } else {
+                            sunshineDurationResultSection.innerHTML = '';
                         }
                     }
                 }).catch(error => console.error('Error:', error));
@@ -179,9 +259,19 @@
 
     });
 
-    function areCheckboxesChecked() {
-        const checkboxes = document.querySelectorAll('.form-check-input');
-        return Array.from(checkboxes).some(checkbox => checkbox.checked);
+    function cancelSelection() {
+        let checkboxes = document.querySelectorAll('.form-check-input');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = !checkbox.checked;
+        });
+    }
+
+
+    function selectAllCheckboxes() {
+        let checkboxes = document.querySelectorAll('.form-check-input');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = true;
+        });
     }
 
     function fetchYourData(selectedValue) {
@@ -190,6 +280,8 @@
         const humidityCheckbox = document.getElementById("humidity");
         const rainfallCheckbox = document.getElementById("rainfall");
         const windSpeedCheckbox = document.getElementById("windSpeed");
+        const airPressureCheckbox = document.getElementById("airPressure");
+        const sunshineDurationCheckbox = document.getElementById("sunshine");
 
         if (selectedValue === "選擇縣市") {
             alert("請選擇一個縣市");
@@ -213,8 +305,13 @@
         if (windSpeedCheckbox.checked) {
             queryParams.push("type=windSpeed");
         }
+        if (airPressureCheckbox.checked) {
+            queryParams.push("type=airPressure");
+        }
+        if (sunshineDurationCheckbox.checked) {
+            queryParams.push("type=sunshine");
+        }
         url += queryParams.length > 0 ? '?' + queryParams.join('&') : '';
-
         return fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -223,8 +320,8 @@
                 return response.json();
             });
     }
-
 </script>
+
 
 
 </body>
