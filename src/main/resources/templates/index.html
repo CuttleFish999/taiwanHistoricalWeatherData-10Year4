@@ -21,7 +21,23 @@
         #query-btn {
             margin-bottom: 2em;
         }
-
+        .form-label{
+            font-weight: 1000;
+            font-size: 1.1em;
+        }
+        #cancelBtn{
+            background-color: rgb(0, 123, 255);
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease 0s;
+            margin-bottom: 1em;
+            font-weight: 1000;
+        }
+        #cancelBtn:hover{
+            background: rgb(173, 216, 230)
+        }
         .result-chart {
             margin-top: 20px;
         }
@@ -72,6 +88,10 @@
             </div>
             <div class="col-12" id="weatherDataTypes-div">
                 <label class="form-label">氣象數據類型</label>
+                <button id="cancelBtn" onclick="toggleSelection(); return false;"
+                        style="">
+                    取消選擇
+                </button>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="temperature" id="temperature">
                     <img class="icon" th:src="@{/icon/index/thermometer.png}">
@@ -114,13 +134,11 @@
                         日照指數
                     </label>
                 </div>
+
             </div>
         </div>
 
-        <button id="cancelBtn" onclick="toggleSelection(); return false;"
-                style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">
-            取消選擇
-        </button>
+
 
 
         <div class="text-center">
