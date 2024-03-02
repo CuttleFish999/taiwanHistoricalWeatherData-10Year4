@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function fetchYourData(selectedValue) {
+
+    if (selectedValue === "選擇縣市"){
+        alert("請選擇一個縣市");
+        selectedValue.style.color = "red";
+    }
+
     console.log(selectedValue);
 
     return fetch(`/getSingleMonthData/${selectedValue}`)
