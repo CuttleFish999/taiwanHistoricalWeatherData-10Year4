@@ -1,15 +1,15 @@
 package dodo.taiwanweather.weather.dto;
 
 public class WeatherForeacst {
-    private double latitude; // 纬度
-    private double longitude; // 经度
+    private double latitude; // 緯度
+    private double longitude; // 經度
     private double generationtime_ms; // 生成时间（毫秒）
     private int utc_offset_seconds; // UTC偏移量（秒）
-    private String timezone; // 时区
-    private String timezone_abbreviation; // 时区缩写
+    private String timezone; // 時區
+    private String timezone_abbreviation; // 時區縮寫
     private double elevation; // 海拔
-    private HourlyUnits hourly_units; // 每小时单位
-    private HourlyData hourly; // 每小时数据
+    private HourlyUnits hourly_units; // 每小時單位
+    private HourlyData hourly; // 每小時數據
 
     public double getLatitude() {
         return latitude;

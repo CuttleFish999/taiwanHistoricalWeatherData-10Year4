@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣氣象歷史資料查詢</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html,body{
+            width: 100%;
+
+        }
+
+        body {
+            padding-top: 20px;
+        }
+
+        .container {
+            max-width: 960px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .headerInput {
+            text-align: center;
+            font-size: 1.5em !important;
+            border-radius: 25px;
+        }
+
+        /*yearlyStatistics-div*/
+
+        #yearlyStatistics-div{
+            display: flex;
+            flex-wrap: nowrap;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        .col-md-4 {
+            display: flex;
+            flex-direction: column;
+            margin: 0 .3em;
+        }
+
+        #city-label {
+            padding-right: 1em
+        }
+
+        /*information-div*/
+        #information-div ul {
+            list-style: none;
+            counter-reset: section;
+        }
+
+        #information-div ul li::before {
+            content: counter(section) ". ";
+            counter-increment: section;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        #query-btn {
+            margin-bottom: 2em;
+        }
+
+        .form-label {
+            font-weight: 1000;
+            font-size: 1.1em;
+        }
+
+        #cancelBtn {
+            background-color: rgb(0, 123, 255);
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease 0s;
+            margin-bottom: 1em;
+            font-weight: 1000;
+        }
+
+        #cancelBtn:hover {
+            background: rgb(173, 216, 230)
+        }
+
+        .chart-div {
+            width: 100%;
+            height: 550px;
+        }
+
+        .result-chart {
+            margin-top: 20px;
+        }
+
+        .icon {
+            width: 25px;
+        }
+
+        #weatherDataTypes-div {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /*returnIcon*/
+
+        #nav-div {
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            bottom: 2em;
+            right: 2em;
+            align-items: flex-end;
+        }
+
+        #current-div {
+            background: rgba(0, 0, 0, .5);
+            border-radius: 15px;
+            padding: 0.5em;
+            margin: 1em;
+
+            position: relative;
+            width: 6em;
+            left: 2.5em;
+        }
+
+        .current-span {
+            color: #fff;
+            display: block;
+            text-align: center;
+        }
+
+        .returnIcon,
+        .nav-icon {
+            width: 50px;
+
+        }
+
+        .returnIcon {
+            transform: rotate(90deg);
+        }
+
+        .nav-icon {
+            padding-bottom: 1em;
+            padding-left: 0.4em;
+        }
+
+        {
+            background: #000
+        ;
+            display: block
+        ;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header text-center">
+        <h2>台灣氣象歷史資料查詢</h2>
+        <p>查詢台灣近10年的氣溫、濕度、雨量、風速、氣壓、日照指數等資料</p>
+    </div>
+    <form id="searchForm">
+        <div class="row g-3">
+            <div id="yearlyStatistics-div">
+            <div class="col-md-4">
+                <label id="city-label" for="city" class="form-label headerInput">觀測站</label>
+
+                <select id="city" class="form-select headerInput">
+                    <option selected>選擇縣市</option>
+                    <th:block th:each="station : ${weatherData}">
+                        <th:block th:if="${station.StationName != null && station.StationName != ''}">
+                            <option th:value="${station.StationID}" th:text="${station.StationName}"></option>
+                        </th:block>
+                    </th:block>
+                </select>
+            </div>
+
+
+                <div class="col-md-4">
+                    <label for="startDate" class="form-label headerInput">開始統計年/西元</label>
+                    <input type="" class="form-control headerInput" id="startDate" th:value="${StationStartYear}">
+                </div>
+                <div class="col-md-4">
+                    <label for="endDate" class="form-label headerInput">結束統計年/西元</label>
+                    <input type="" class="form-control headerInput" id="endDate">
+                </div>
+                <div class="col-md-4">
+                    <label for="endDate" class="form-label headerInput">統計總年分/年</label>
+                    <input type="" class="form-control headerInput" id="TotalYear">
+                </div>
+            </div>
+
+            <div class="col-12" id="weatherDataTypes-div">
+                <label class="form-label">氣象數據類型</label>
+                <button id="cancelBtn" onclick="toggleSelection(); return false;"
+                        style="">
+                    取消選擇
+                </button>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="temperature" id="temperature" checked>
+                    <img class="icon" th:src="@{/icon/index/thermometer.png}">
+                    <label class="form-check-label" for="temperature">
+                        氣溫
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="humidity" id="humidity" checked>
+                    <img class="icon" th:src="@{/icon/index/humidity.png}">
+                    <label class="form-check-label" for="humidity">
+                        濕度
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="rainfall" id="rainfall" checked>
+                    <img class="icon" th:src="@{/icon/index/rainfall.png}">
+                    <label class="form-check-label" for="rainfall">
+                        雨量
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="windSpeed" id="windSpeed" checked>
+                    <img class="icon" th:src="@{/icon/index/storm.png}">
+                    <label class="form-check-label" for="windSpeed">
+                        風速
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="pressure" id="airPressure" checked>
+                    <img class="icon" th:src="@{/icon/index/cloudy.png}">
+                    <label class="form-check-label" for="airPressure">
+                        氣壓
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="sunshine" id="sunshine" checked>
+                    <img class="icon" th:src="@{/icon/index/uv-index.png}">
+                    <label class="form-check-label" for="sunshine">
+                        日照指數
+                    </label>
+                </div>
+
+            </div>
+        </div>
+        <hr>
+
+        <!--        <div id="information-div">-->
+        <!--            <ul>-->
+        <!--                <li> 氣溫:</li>-->
+        <!--                <li> 濕度:</li>-->
+        <!--                <li> 雨量:</li>-->
+        <!--                <li> 風速:</li>-->
+        <!--                <li> 氣壓:</li>-->
+        <!--                <li> 日照指數:</li>-->
+        <!--            </ul>-->
+        <!--        </div>-->
+
+        <div class="text-center">
+            <button type="button" id="query-btn" onclick="" class="btn btn-primary mt-3">查詢</button>
+        </div>
+
+        <hr>
+
+        <div class="chart-div" id="airTemperatureResultSection"></div>
+        <div class="chart-div" id="relativeHumidityResultSection"></div>
+        <div class="chart-div" id="precipitationResultSection"></div>
+        <div class="chart-div" id="windSpeedResultSection"></div>
+        <div class="chart-div" id="airPressureResultSection"></div>
+        <div class="chart-div" id="sunshineDurationResultSection"></div>
+
+    </form>
+
+    <div id="nav-div">
+
+        <!--        <th:block th:each="station : ${weatherData}">-->
+        <!--            <th:block th:if="${station.StationName != null && station.StationName != ''}">-->
+        <!--                <option th:value="${station.StationID}" th:text="${station.StationName}"></option>-->
+        <!--            </th:block>-->
+        <!--        </th:block>-->
+
+        <a href="#airTemperatureResultSection">
+            <img class="nav-icon" th:src="@{/icon/index/thermometer.png}" alt="">
+        </a>
+        <a href="#relativeHumidityResultSection">
+            <img class="nav-icon" th:src="@{/icon/index/humidity.png}" alt="">
+        </a>
+        <a href="#precipitationResultSection">
+            <img class="nav-icon" th:src="@{/icon/index/rainfall.png}" alt="">
+        </a>
+        <a href="#windSpeedResultSection">
+            <img class="nav-icon" th:src="@{/icon/index/storm.png}" alt="">
+        </a>
+        <a href="#airPressureResultSection">
+            <img class="nav-icon" th:src="@{/icon/index/cloudy.png}" alt="">
+        </a>
+        <a href="#sunshineDurationResultSection">
+            <img class="nav-icon" th:src="@{/icon/index/uv-index.png}" alt="">
+        </a>
+        <a href="#">
+            <img class="returnIcon" th:src="@{/icon/index/previous.png}" alt="">
+        </a>
+        <div id="current-div">
+            <span class="current-span" id="">當前城市: </span>
+            <span class="current-span" id="current-city"></span>
+
+            <!--            <select id="city2" class="form-select">-->
+            <!--                <option selected>選擇縣市</option>-->
+            <!--                <th:block th:each="station : ${weatherData}">-->
+            <!--                    <th:block th:if="${station.StationName != null && station.StationName != ''}">-->
+            <!--                        <option th:value="${station.StationID}" th:text="${station.StationName}"></option>-->
+            <!--                    </th:block>-->
+            <!--                </th:block>-->
+            <!--            </select>-->
+        </div>
+
+        <!--        airTemperatureResultSection-->
+        <!--        relativeHumidityResultSection-->
+        <!--        precipitationResultSection-->
+        <!--        windSpeedResultSection-->
+        <!--        airPressureResultSection-->
+        <!--        sunshineDurationResultSection-->
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script th:src="@{/js/indexJS/com.js}"></script>
+<script th:src="@{/js/indexJS/airTemperature.js}"></script>
+<script th:src="@{/js/indexJS/relativeHumidity.js}"></script>
+<script th:src="@{/js/indexJS/precipitation.js}"></script>
+<script th:src="@{/js/indexJS/windSpeed.js}"></script>
+<script th:src="@{/js/indexJS/airPressure.js}"></script>
+<script th:src="@{/js/indexJS/sunshineDuration.js}"></script>
+
+<script>
+    const citySelect = document.getElementById("city");
+    const currentSpan = document.getElementById("current-city");
+    const query_btn = document.getElementById("query-btn");
+
+    const TotalYear = document.getElementById("TotalYear");
+
+    query_btn.addEventListener("click", function () {
+
+        currentSpan.innerText = `${citySelect.options[citySelect.selectedIndex].text}`;
+
+        let stationSelectVal = citySelect.value;
+        if (!areCheckboxesChecked()) {
+            alert("請至少選擇一種氣象數據類型");
+            return;
+        }
+
+        fetchYourData(stationSelectVal).then(data => {
+            if (data) {
+                const stationStartYear = data[0].StationStartYear;
+                const stationEndYear = data[0].StationEndYear;
+                const formattedStartYear = stationStartYear.toString();
+                const formattedEndYear = stationEndYear.toString();
+
+                document.getElementById('startDate').value = formattedStartYear;
+
+                document.getElementById('endDate').value = formattedEndYear;
+                TotalYear.value = formattedEndYear - formattedStartYear;
+            }
+        }).catch(error => console.error('Error:', error));
+
+
+    });
+
+</script>
+
+</body>
+</html>
