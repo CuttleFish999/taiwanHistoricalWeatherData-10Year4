@@ -3,6 +3,7 @@ package dodo.taiwanweather.weather.controller;
 import java.util.List;
 import java.util.Map;
 
+import dodo.taiwanweather.weather.dto.WeatherForeacst;
 import dodo.taiwanweather.weather.service.WeatherDateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,5 +37,9 @@ public class WeatherDataController {
 
     }
 
+    public  WeatherForeacst getWeatherTemperature(){
+
+        return null;
+    }
 
 }
