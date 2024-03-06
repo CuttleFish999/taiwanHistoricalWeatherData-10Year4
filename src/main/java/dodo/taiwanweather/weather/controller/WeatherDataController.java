@@ -19,7 +19,7 @@ public class WeatherDataController {
 
 
 
-    @GetMapping("/home")
+    @GetMapping("/")
     public String home(Model model) {
 
         List<Map<String, Object>> weatherData = weatherDateService.fetchStationData();
